@@ -6,6 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +20,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RecyclerView carRecyclerView = findViewById(R.id.carRecyclerView);
+        carRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        List<Car> cars = new ArrayList<>();
+        cars.add(new Car("현대 아반떼", "₩20,000 / 1시간", R.drawable.sample_car));
+        cars.add(new Car("기아 쏘렌토", "₩25,000 / 1시간", R.drawable.sample_car));
+        cars.add(new Car("쉐보레 스파크", "₩18,000 / 1시간", R.drawable.sample_car));
+
+        CarAdapter adapter = new CarAdapter(this, cars);
+        carRecyclerView.setAdapter(adapter);
 
         Button btnCallHere, btnPickup, btnOneway, btnLongterm;
 
