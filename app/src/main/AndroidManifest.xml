@@ -27,6 +27,8 @@
         <activity android:name=".PickupActivity" />
         <activity android:name=".OnewayActivity" />
         <activity android:name=".LongtermActivity" />
+        <activity android:name=".CarDetailActivity" />
+
 
     </application>
 

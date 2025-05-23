@@ -17,7 +17,6 @@
         android:orientation="horizontal"
         android:padding="10dp">
 
-        <!-- 앱 이름 -->
         <TextView
             android:id="@+id/appTitle"
             android:layout_width="0dp"
@@ -29,7 +28,6 @@
             android:textSize="30dp"
             android:textStyle="bold|italic" />
 
-        <!-- 알림 아이콘 -->
         <ImageView
             android:id="@+id/notificationIcon"
             android:layout_width="32dp"
@@ -38,7 +36,6 @@
             android:contentDescription="Notifications"
             android:src="@drawable/ic_notifications" />
 
-        <!-- 마이페이지 아이콘 -->
         <ImageView
             android:id="@+id/mypageIcon"
             android:layout_width="32dp"
@@ -46,18 +43,19 @@
             android:layout_marginRight="20dp"
             android:contentDescription="My Page"
             android:src="@drawable/ic_mypage" />
-
     </LinearLayout>
+
+    <!-- 메인 메뉴 -->
     <GridLayout
         android:id="@+id/main_menu"
+        android:layout_below="@id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/top_bar"
         android:columnCount="2"
         android:rowCount="2"
         android:padding="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp">
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp">
 
         <Button
             android:id="@+id/btn_call_here"
@@ -112,7 +110,13 @@
             app:cornerRadius="5dp"/>
     </GridLayout>
 
-
-    <!-- 아래 내용 추가 가능 -->
+    <!-- 차량 리스트 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/carRecyclerView"
+        android:layout_below="@id/main_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:layout_marginTop="8dp" />
 
 </RelativeLayout>
