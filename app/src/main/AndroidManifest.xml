@@ -21,6 +21,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".NotificationActivity" />
+        <activity android:name=".MyPageActivity" />
+        <activity android:name=".CallHereActivity" />
+        <activity android:name=".PickupActivity" />
+        <activity android:name=".OnewayActivity" />
+        <activity android:name=".LongtermActivity" />
+
     </application>
 
 </manifest>
