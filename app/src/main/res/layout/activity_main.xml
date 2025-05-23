@@ -1,17 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
+    <!-- 상단 바 -->
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <!-- 앱 이름 -->
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="SSACAR"
+            android:textColor="#F77F8187"
+            android:textSize="30dp"
+            android:textStyle="bold|italic" />
+
+        <!-- 알림 아이콘 -->
+        <ImageView
+            android:id="@+id/notificationIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Notifications"
+            android:src="@drawable/ic_notifications" />
+
+        <!-- 마이페이지 아이콘 -->
+        <ImageView
+            android:id="@+id/mypageIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginRight="20dp"
+            android:contentDescription="My Page"
+            android:src="@drawable/ic_mypage" />
+
+    </LinearLayout>
+    <GridLayout
+        android:id="@+id/main_menu"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="67dp"
-        tools:layout_editor_absoluteY="124dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_below="@id/top_bar"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:padding="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp">
+
+        <Button
+            android:id="@+id/btn_call_here"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF7F8187"
+            android:text="여기로 부르기"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            app:cornerRadius="5dp"/>
+
+        <Button
+            android:id="@+id/btn_pickup"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF7F8187"
+            android:text="가지러 가기"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            app:cornerRadius="5dp"/>
+
+        <Button
+            android:id="@+id/btn_oneway"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF7F8187"
+            android:text="편도"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            app:cornerRadius="5dp"/>
+
+        <Button
+            android:id="@+id/btn_longterm"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            android:backgroundTint="#FF7F8187"
+            android:text="장기렌트"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            app:cornerRadius="5dp"/>
+    </GridLayout>
+
+
+    <!-- 아래 내용 추가 가능 -->
+
+</RelativeLayout>
