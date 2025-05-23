@@ -28,6 +28,10 @@
         <activity android:name=".OnewayActivity" />
         <activity android:name=".LongtermActivity" />
         <activity android:name=".CarDetailActivity" />
+        <activity android:name=".CustomerCenterActivity"/>
+        <activity android:name=".UsageHistoryActivity"/>
+        <activity android:name=".PaymentLicenseActivity"/>
+        <activity android:name=".CreditActivity"/>
 
 
     </application>
