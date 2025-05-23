@@ -39,7 +39,7 @@
 
         <!-- 차량 이미지 -->
         <ImageView
-            android:id="@+id/car_image"
+            android:id="@+id/detailCarImage"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="16dp"
@@ -50,6 +50,7 @@
 
         <!-- 차량 이름, 요금 -->
         <TextView
+            android:id="@+id/detailCarName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="시발 자동차"
@@ -58,6 +59,7 @@
             android:layout_marginTop="8dp" />
 
         <TextView
+            android:id="@+id/detailCarPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="주행요금 170~230원/km"
