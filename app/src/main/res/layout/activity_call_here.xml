@@ -21,14 +21,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:layout_marginTop="88dp"
         android:background="#ffffff"
         android:ems="10"
         android:hint="키워드를 입력해주세요"
         android:inputType="text"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/search_button"
@@ -36,9 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/keyword_et"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="4dp"
         android:text="검색"
-        app:layout_constraintEnd_toEndOf="@+id/keyword_et"
-        tools:layout_editor_absoluteY="27dp" />
+        tools:layout_editor_absoluteX="299dp"
+        tools:layout_editor_absoluteY="20dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
