@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <resources>
+    <!-- 앱 이름 -->
+    <string name="app_name">MyRentCarApp</string>
+
+    <!-- 버튼, 문구 -->
+    <string name="pay_button_text">총 31,000원 결제하기</string>
+    <string name="agree_text">예약 정보 확인 및 약관 동의</string>
+    <string name="back_button_description">뒤로가기</string>
+    <string name="toss_notice">토스페이 결제 시 혜택: 10% &amp; 캐시백</string>
+
+    <!-- 카드 리스트 -->
+    <string-array name="card_list">
+        <item>국민카드 / 개인</item>
+        <item>신한카드 / 법인</item>
+        <item>현대카드</item>
+    </string-array>
+
+</resources>
