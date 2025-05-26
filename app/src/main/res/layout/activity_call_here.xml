@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    tools:context=".MainActivity">
 
-    <TextView
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapsActivity"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <EditText
+        android:id="@+id/keyword_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="#ffffff"
+        android:ems="10"
+        android:hint="키워드를 입력해주세요"
+        android:inputType="text"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="여기로 부르기 화면"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#000000"/>
-</LinearLayout>
+        android:layout_below="@id/keyword_et"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="4dp"
+        android:text="검색"
+        app:layout_constraintEnd_toEndOf="@+id/keyword_et"
+        tools:layout_editor_absoluteY="27dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
