@@ -39,7 +39,7 @@
 
         <!-- 차량 이미지 -->
         <ImageView
-            android:id="@+id/car_image"
+            android:id="@+id/detailCarImage"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="16dp"
@@ -50,6 +50,7 @@
 
         <!-- 차량 이름, 요금 -->
         <TextView
+            android:id="@+id/detailCarName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="시발 자동차"
@@ -58,6 +59,7 @@
             android:layout_marginTop="8dp" />
 
         <TextView
+            android:id="@+id/detailCarPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="주행요금 170~230원/km"
@@ -73,7 +75,14 @@
             android:layout_marginBottom="16dp">
 
             <TextView android:text="제조사\n기아" android:padding="8dp" android:textSize="14sp" />
-            <TextView android:text="분류\n준중형" android:padding="8dp" android:textSize="14sp" />
+
+            <TextView
+                android:layout_row="0"
+                android:layout_column="6"
+                android:padding="8dp"
+                android:text="분류\n준중형"
+                android:textSize="14sp" />
+
             <TextView android:text="연료\n휘발유" android:padding="8dp" android:textSize="14sp" />
             <TextView android:text="변속방식\n자동 무단" android:padding="8dp" android:textSize="14sp" />
             <TextView android:text="승차 인원\n5" android:padding="8dp" android:textSize="14sp" />

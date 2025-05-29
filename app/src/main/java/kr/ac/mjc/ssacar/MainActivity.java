@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 // ★ 수평 방향으로 한 줄에 쭉 나열
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         carRecyclerView.setLayoutManager(layoutManager);
-
+        
         List<Car> cars = new ArrayList<>();
         cars.add(new Car("현대 아반떼", "₩20,000 / 1시간", R.drawable.sample_car));
         cars.add(new Car("기아 쏘렌토", "₩25,000 / 1시간", R.drawable.sample_car));
@@ -73,22 +73,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void goToCustomer(View view) {
-        startActivity(new Intent(this, CustomerCenterActivity.class));
-    }
-
-    public void goToHistory(View view) {
-        startActivity(new Intent(this, UsageHistoryActivity.class));
-    }
-
-    public void goToPayment(View view) {
-        startActivity(new Intent(this, PaymentLicenseActivity.class));
-    }
-
-    public void goToCredit(View view) {
-        startActivity(new Intent(this, CreditActivity.class));
-    }
-
 
 
 }
