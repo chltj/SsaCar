@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CallHereActivity.class)));
 
         btnPickup.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, PickupActivity.class)));
+                startActivity(new Intent(MainActivity.this, PickUpActivity.class)));
 
         btnOneway.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, OnewayActivity.class)));
@@ -69,6 +69,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnCallHere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CallHereActivity.class);
                 startActivity(intent);
             }
         });

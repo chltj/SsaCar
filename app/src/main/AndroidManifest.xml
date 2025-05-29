@@ -22,6 +22,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
 
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -35,7 +36,7 @@
         <activity android:name=".NotificationActivity" />
         <activity android:name=".MyPageActivity" />
         <activity android:name=".CallHereActivity" />
-        <activity android:name=".PickupActivity" />
+        <activity android:name=".PickUpActivity" />
         <activity android:name=".OnewayActivity" />
         <activity android:name=".LongtermActivity" />
         <activity android:name=".CarDetailActivity" />
@@ -43,6 +44,9 @@
         <activity android:name=".UsageHistoryActivity"/>
         <activity android:name=".PaymentLicenseActivity"/>
         <activity android:name=".CreditActivity"/>
+        <activity android:name=".CarListActivity" android:exported="false"/>
+        <activity android:name=".TimeSettingActivity" android:exported="false"/>
+        <activity android:name=".PaymentActivity"/>
 
 
     </application>
