@@ -1,4 +1,4 @@
-package kr.ac.mjc.ssacar;
+package kr.ac.mjc.ssacar.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import kr.ac.mjc.ssacar.R;
 
 public class TimeSettingActivity extends AppCompatActivity {
 
@@ -70,7 +72,7 @@ public class TimeSettingActivity extends AppCompatActivity {
                 android.util.Log.d("TimeSettingActivity", "CarListActivity로 이동 시작");
 
                 try {
-                    Intent carListIntent = new Intent(TimeSettingActivity.this, CarListActivity.class);
+                    Intent carListIntent = new Intent(TimeSettingActivity.this, CallReturnActivity.class);
                     carListIntent.putExtra("place_name", placeName);
                     carListIntent.putExtra("address", address);
                     carListIntent.putExtra("latitude", latitude);

@@ -92,4 +92,8 @@ public class LocationDto {
     public void setCategory_group_name(String category_group_name) {
         this.category_group_name = category_group_name;
     }
+
+    public String getDistance() {
+        return null;
+    }
 }

@@ -1,4 +1,4 @@
-package kr.ac.mjc.ssacar;
+package kr.ac.mjc.ssacar.activity;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -14,18 +14,17 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,6 +36,9 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
 
+import kr.ac.mjc.ssacar.LocationDto;
+import kr.ac.mjc.ssacar.R;
+import kr.ac.mjc.ssacar.ResponseDto;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -48,6 +50,8 @@ public class PickUpActivity extends AppCompatActivity implements OnMapReadyCallb
     GoogleMap mGoogleMap;
     EditText KeywordEt;
 
+    private ImageView btnBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +62,10 @@ public class PickUpActivity extends AppCompatActivity implements OnMapReadyCallb
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setupBackButton();
+
+
 
         KeywordEt = findViewById(R.id.keyword_et);
         KeywordEt.setOnKeyListener(this);
@@ -76,6 +84,17 @@ public class PickUpActivity extends AppCompatActivity implements OnMapReadyCallb
             }, 1000);
         } else {
             setMyLocation();
+        }
+    }
+
+    private void setupBackButton() {
+        ImageView backButton = findViewById(R.id.back_button); // ID 확인 필요
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> {
+                finish(); // 또는 원하는 동작
+            });
+        } else {
+            Log.e("PickUpActivity", "Back button not found in layout");
         }
     }
 

@@ -114,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="어느 주차장으로 가져다드릴까요?"
+            android:text="어느 주차장으로 반납하시나요?"
             android:textColor="#666666"
             android:textSize="14sp" />
 
@@ -176,11 +176,11 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="#6366F1"
-            android:text="여기서 차 받기"
+            android:enabled="false"
+            android:text="여기서 차 반납하기"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:enabled="false" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 
