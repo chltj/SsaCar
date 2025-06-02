@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,13 +54,29 @@ public class VehicleListActivity extends AppCompatActivity {
     private OkHttpClient client;
     private Gson gson;
 
-    // 차량별 가격 설정 (원하는 대로 수정 가능)
     private Map<String, Integer> customPrices;
+
+    private String placeName;
+    private String address;
+    private double latitude;
+    private double longitude;
+    private String departureTime;
+    private String arrivalTime;
+
+    private TextView locationTimeInfoTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_list);
+
+        Intent intent = getIntent();
+        placeName = intent.getStringExtra("place_name");
+        address = intent.getStringExtra("address");
+        latitude = intent.getDoubleExtra("latitude", 0.0);
+        longitude = intent.getDoubleExtra("longitude", 0.0);
+        departureTime = intent.getStringExtra("departure_time");
+        arrivalTime = intent.getStringExtra("arrival_time");
 
         initViews();
         initCustomPrices();
@@ -68,7 +85,6 @@ public class VehicleListActivity extends AppCompatActivity {
         client = new OkHttpClient();
         gson = new Gson();
 
-        // 차량 데이터 로드
         loadVehicleData();
     }
 
@@ -77,14 +93,18 @@ public class VehicleListActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.search_button);
         vehicleRecyclerView = findViewById(R.id.vehicle_recycler_view);
         progressBar = findViewById(R.id.progress_bar);
-        selectCompleteButton = findViewById(R.id.select_complete_button); // 추가된 부분
+        selectCompleteButton = findViewById(R.id.select_complete_button);
+        locationTimeInfoTextView = findViewById(R.id.location_time_info_tv);
 
         vehicleList = new ArrayList<>();
 
-        // 검색 버튼 클릭 리스너
+        String locationTimeInfo = "선택 위치: " + placeName + "\n" +
+                "출발: " + departureTime + "\n" +
+                "도착: " + arrivalTime;
+        locationTimeInfoTextView.setText(locationTimeInfo);
+
         searchButton.setOnClickListener(v -> performSearch());
 
-        // 엔터키 검색
         searchEditText.setOnKeyListener((v, keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
                 performSearch();
@@ -93,32 +113,32 @@ public class VehicleListActivity extends AppCompatActivity {
             return false;
         });
 
-        // 선택 완료 버튼 클릭 리스너
-        selectCompleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedVehicle != null) {
-                    // PaymentActivity로 이동
-                    Intent intent = new Intent(VehicleListActivity.this, PaymentActivity.class);
-                    intent.putExtra("selected_vehicle", selectedVehicle);
-                    intent.putExtra("vehicle_name", selectedVehicle.getName());
-                    intent.putExtra("vehicle_price", selectedVehicle.getPrice());
-                    intent.putExtra("vehicle_type", selectedVehicle.getEngineType());
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(VehicleListActivity.this, "차량을 먼저 선택해주세요.", Toast.LENGTH_SHORT).show();
-                }
+        selectCompleteButton.setOnClickListener(v -> {
+            if (selectedVehicle != null) {
+                Intent intent = new Intent(VehicleListActivity.this, PaymentActivity.class);
+                intent.putExtra("selected_vehicle", selectedVehicle);
+                intent.putExtra("vehicle_name", selectedVehicle.getName());
+                intent.putExtra("vehicle_price", selectedVehicle.getPrice());
+                intent.putExtra("vehicle_type", selectedVehicle.getEngineType());
+
+                intent.putExtra("place_name", placeName);
+                intent.putExtra("address", address);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("departure_time", departureTime);
+                intent.putExtra("arrival_time", arrivalTime);
+
+                startActivity(intent);
+            } else {
+                Toast.makeText(VehicleListActivity.this, "차량을 먼저 선택해주세요.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 초기 선택 완료 버튼 비활성화
         updateSelectButton();
 
-        // 뒤로가기 버튼
         ImageView backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> finish());
     }
-
     private void updateSelectButton() {
         if (selectedVehicle != null) {
             selectCompleteButton.setEnabled(true);

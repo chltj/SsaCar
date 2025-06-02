@@ -60,24 +60,24 @@
         <EditText
             android:id="@+id/search_edit_text"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#F8F8F8"
             android:hint="차량명을 검색하세요 (예: 아이오닉)"
-            android:textColorHint="#999999"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
+            android:imeOptions="actionSearch"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
             android:paddingTop="12dp"
+            android:paddingEnd="16dp"
             android:paddingBottom="12dp"
             android:singleLine="true"
-            android:imeOptions="actionSearch" />
+            android:textColor="@android:color/black"
+            android:textColorHint="#999999"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/search_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:background="#4CAF50"
             android:clickable="true"
@@ -99,11 +99,14 @@
         android:layout_marginTop="1dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/location_time_info_tv"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="지하 명지전문대학 주차장"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:layout_marginBottom="24dp"
+            android:background="#f0f0f0"
+            android:padding="8dp"
+            android:text="선택된 시간"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <View

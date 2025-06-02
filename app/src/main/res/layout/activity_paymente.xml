@@ -11,6 +11,7 @@
         android:padding="16dp">
 
         <!-- 🔙 상단 타이틀 -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -102,6 +103,14 @@
             android:textColor="#666666" />
 
         <!-- 🕒 이용 시간 -->
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="이용시간"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/usage_time_tv"
             android:layout_width="wrap_content"
