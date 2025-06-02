@@ -302,62 +302,54 @@ public class CallReturnActivity extends AppCompatActivity implements OnMapReadyC
         selectedLatLng = latLng;
         selectedPlaceName = placeName != null ? placeName : "선택된 위치";
 
-        // 로딩 상태 표시
         mainHandler.post(() -> {
             selectedLocationTv.setText("주소를 확인하는 중...");
             confirmLocationBtn.setEnabled(false);
             confirmLocationBtn.setText("주소 확인 중...");
         });
 
-        // 백그라운드에서 주소 변환 실행
         executorService.execute(() -> {
             String address = "주소를 찾을 수 없습니다";
             String detailedAddress = "";
 
             try {
                 if (geocoder != null && Geocoder.isPresent()) {
-                    List<Address> addresses = geocoder.getFromLocation(
-                            latLng.latitude, latLng.longitude, 1);
+                    List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
 
                     if (addresses != null && !addresses.isEmpty()) {
                         Address addr = addresses.get(0);
 
-                        // 한국 주소 형식으로 구성
+                        // 🚫 서울 외 지역이면 처리 중단
+                        String adminArea = addr.getAdminArea();
+                        if (adminArea == null || !adminArea.contains("서울")) {
+                            mainHandler.post(() -> {
+                                Toast.makeText(CallReturnActivity.this, "서울 안에서만 차량 호출이 가능합니다.", Toast.LENGTH_LONG).show();
+                                selectedLocationTv.setText("🚫 서울 외 지역입니다.");
+                                confirmLocationBtn.setEnabled(false);
+                                confirmLocationBtn.setText("선택 불가");
+                                if (currentLocationMarker != null) {
+                                    currentLocationMarker.remove();  // 기존 마커 제거
+                                }
+                            });
+                            return;
+                        }
+
+                        // 주소 구성
                         StringBuilder addressBuilder = new StringBuilder();
-
-                        // 시/도
-                        if (addr.getAdminArea() != null) {
-                            addressBuilder.append(addr.getAdminArea()).append(" ");
-                        }
-
-                        // 시/군/구
-                        if (addr.getSubAdminArea() != null) {
-                            addressBuilder.append(addr.getSubAdminArea()).append(" ");
-                        }
-
-                        // 동/면/읍
-                        if (addr.getLocality() != null) {
-                            addressBuilder.append(addr.getLocality()).append(" ");
-                        }
-
-                        // 상세 주소
-                        if (addr.getThoroughfare() != null) {
-                            addressBuilder.append(addr.getThoroughfare()).append(" ");
-                        }
-
-                        if (addr.getSubThoroughfare() != null) {
-                            addressBuilder.append(addr.getSubThoroughfare());
-                        }
+                        if (addr.getAdminArea() != null) addressBuilder.append(addr.getAdminArea()).append(" ");
+                        if (addr.getSubAdminArea() != null) addressBuilder.append(addr.getSubAdminArea()).append(" ");
+                        if (addr.getLocality() != null) addressBuilder.append(addr.getLocality()).append(" ");
+                        if (addr.getThoroughfare() != null) addressBuilder.append(addr.getThoroughfare()).append(" ");
+                        if (addr.getSubThoroughfare() != null) addressBuilder.append(addr.getSubThoroughfare());
 
                         address = addressBuilder.toString().trim();
 
-                        // 만약 위의 방법으로 주소가 제대로 나오지 않으면 getAddressLine 사용
                         if (address.isEmpty() && addr.getMaxAddressLineIndex() >= 0) {
                             address = addr.getAddressLine(0);
                         }
 
-                        // 건물명이나 장소명이 있는 경우
-                        if (addr.getFeatureName() != null && !addr.getFeatureName().equals(addr.getSubThoroughfare())) {
+                        if (addr.getFeatureName() != null &&
+                                !addr.getFeatureName().equals(addr.getSubThoroughfare())) {
                             detailedAddress = addr.getFeatureName();
                         }
                     }
@@ -370,7 +362,6 @@ public class CallReturnActivity extends AppCompatActivity implements OnMapReadyC
                 address = "주소 변환 중 오류가 발생했습니다";
             }
 
-            // 최종 결과를 메인 스레드에서 UI 업데이트
             final String finalAddress = address;
             final String finalDetailedAddress = detailedAddress;
 
