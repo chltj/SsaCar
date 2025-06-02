@@ -107,6 +107,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "버튼 설정 완료");
     }
 
+    public void goToHistory(View view) {
+        // 예시: 다른 화면으로 이동
+        Intent intent = new Intent(this, UsageHistoryActivity.class);
+        startActivity(intent);
+    }
     private void setupIconListeners() {
         notificationIcon.setOnClickListener(new View.OnClickListener() {
             @Override

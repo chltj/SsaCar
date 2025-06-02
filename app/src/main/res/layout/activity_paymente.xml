@@ -189,6 +189,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="예약 정보 확인 및 약관 동의" />
+        <Button
+            android:id="@+id/btn_pay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="결제하기"
+            android:onClick="goToUsageHistory" />
 
         <!-- ✅ 결제 버튼 -->
         <Button

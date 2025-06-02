@@ -221,3 +221,23 @@ public class PaymentActivity extends AppCompatActivity {
         finish();
     }
 }
+public void goToUsageHistory(View view) {
+    Intent intent = new Intent(PaymentActivity.this, UsageHistoryActivity.class);
+
+    // 예시: 사용자가 선택한 데이터 가져오기
+    String carName = ((TextView) findViewById(R.id.detailCarName)).getText().toString();
+    String startTime = "2025-06-02 14:00";  // 실제로는 TimeSettingActivity 등에서 설정한 값 사용
+    String endTime = "2025-06-02 18:00";
+    String pickupLocation = "서울 서대문구 신촌로 100";  // 선택한 대여 위치
+    String returnLocation = "서울 종로구 종로 3가";    // 선택한 반납 위치
+
+    // 이미지 URL도 같이 넘김 (현대 API에서 불러오는 방식이라면 URL 직접 넘기기)
+    intent.putExtra("carName", carName);
+    intent.putExtra("carImageUrl", "https://example.com/kona.png");
+    intent.putExtra("startTime", startTime);
+    intent.putExtra("endTime", endTime);
+    intent.putExtra("pickupLocation", pickupLocation);
+    intent.putExtra("returnLocation", returnLocation);
+
+    startActivity(intent);
+}
