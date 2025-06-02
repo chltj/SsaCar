@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="80dp"
+    android:viewportWidth="120"
+    android:viewportHeight="80">
+
+    <!-- 배경 -->
+    <path
+        android:fillColor="#FFEBEE"
+        android:pathData="M0,0h120v80h-120z"/>
+
+    <!-- X 표시 -->
+    <path
+        android:fillColor="#F44336"
+        android:strokeWidth="4"
+        android:pathData="M30,30 L90,50 M90,30 L30,50"/>
+
+    <!-- 텍스트 배경 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,55 L100,55 L100,70 L20,70 Z"/>
+
+</vector>

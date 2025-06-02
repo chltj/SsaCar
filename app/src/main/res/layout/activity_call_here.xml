@@ -1,16 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    tools:context=".activity.CallHereActivity">
+
+    <!-- 지도 (전체 화면) -->
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:text="SSACAR"
+            android:textColor="#F77F8187"
+            android:textSize="30dp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/menu_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="☰"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+    </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/appTitle3"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="여기로 부르기 화면"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#000000"/>
-</LinearLayout>
+        android:layout_marginLeft="20dp"
+        android:layout_weight="1"
+        android:text="SSACAR"
+        android:textColor="#F77F8187"
+        android:textSize="30dp"
+        android:textStyle="bold|italic" />
+
+    <ImageView
+        android:id="@+id/notificationIcon3"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="12dp"
+        android:contentDescription="Notifications"
+        android:src="@drawable/ic_notifications" />
+
+    <!-- 상단 제목 바 (지도 위에 오버레이) -->
+
+    <!-- 검색 카드 (지도 위에 오버레이) -->
+
+    <!-- 내 위치 버튼 (우측 하단) -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/my_location_btn"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="120dp"
+        android:background="#FFFFFF"
+        android:elevation="6dp"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:text="📍"
+            android:gravity="center"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <!-- 하단 차량 호출 버튼 -->
+    <LinearLayout
+        android:id="@+id/bottom_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 선택된 위치 정보 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="어느 주차장으로 가져다드릴까요?"
+            android:textColor="#666666"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/search_input_area"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#F5F5F5"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <!-- 위치 아이콘 -->
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:text="📍" />
+
+            <!-- 검색 텍스트 -->
+            <TextView
+                android:id="@+id/search_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="주소나 건물명을 검색하세요"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <!-- 변경 버튼 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#F0F0F0"
+                android:padding="8dp"
+                android:text="바꾸기"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/selected_location_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="지도를 터치하여 위치를 선택하세요"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="12dp"
+            android:minHeight="40dp"
+            android:gravity="center_vertical" />
+
+        <!-- 차량 호출 버튼 -->
+        <Button
+            android:id="@+id/confirm_location_btn"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#6366F1"
+            android:text="여기서 차 받기"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:enabled="false" />
+
+    </LinearLayout>
+
+</RelativeLayout>
