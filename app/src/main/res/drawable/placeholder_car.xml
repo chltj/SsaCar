@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="80dp"
+    android:viewportWidth="120"
+    android:viewportHeight="80">
+
+    <!-- 배경 -->
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M0,0h120v80h-120z"/>
+
+    <!-- 차 몸체 -->
+    <path
+        android:fillColor="#9E9E9E"
+        android:pathData="M20,40 L30,30 L90,30 L100,40 L100,60 L90,60 L85,65 L35,65 L30,60 L20,60 Z"/>
+
+    <!-- 왼쪽 바퀴 (원 대신 path 사용) -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M27,60 A8,8 0 1,1 43,60 A8,8 0 1,1 27,60"/>
+
+    <!-- 오른쪽 바퀴 (원 대신 path 사용) -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M77,60 A8,8 0 1,1 93,60 A8,8 0 1,1 77,60"/>
+
+    <!-- 창문 -->
+    <path
+        android:fillColor="#BBBBBB"
+        android:pathData="M35,35 L45,30 L75,30 L85,35 L85,45 L35,45 Z"/>
+</vector>

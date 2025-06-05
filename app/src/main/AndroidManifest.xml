@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 인터넷 권한 추가 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,9 +19,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SsaCar"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,19 +36,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NotificationActivity" />
-        <activity android:name=".MyPageActivity" />
-        <activity android:name=".CallHereActivity" />
-        <activity android:name=".PickupActivity" />
-        <activity android:name=".OnewayActivity" />
-        <activity android:name=".LongtermActivity" />
-        <activity android:name=".CarDetailActivity" />
-        <activity android:name=".CustomerCenterActivity"/>
-        <activity android:name=".UsageHistoryActivity"/>
-        <activity android:name=".PaymentLicenseActivity"/>
-        <activity android:name=".CreditActivity"/>
 
+        <activity android:name=".activity.NotificationActivity" />
+        <activity android:name=".activity.MyPageActivity" />
+        <activity android:name=".activity.CallHereActivity" />
+        <activity android:name=".activity.PickUpActivity" />
+        <activity android:name=".activity.OnewayActivity" />
+        <activity android:name=".activity.LongtermActivity" />
+        <activity android:name=".activity.CarDetailActivity" />
+        <activity android:name=".activity.CustomerCenterActivity"/>
+        <activity android:name=".activity.UsageHistoryActivity"/>
+        <activity android:name=".activity.PaymentLicenseActivity"/>
+        <activity android:name=".activity.CreditActivity"/>
+        <activity android:name=".activity.VehicleListActivity" android:exported="false"/>
+        <activity android:name=".activity.TimeSettingActivity" android:exported="false"/>
+        <activity android:name=".activity.PaymentActivity"/>
+        <activity android:name=".activity.CallReturnActivity"/>
 
     </application>
+    <!-- HTTP 트래픽 허용 (Android 9+ 대응) -->
 
 </manifest>
