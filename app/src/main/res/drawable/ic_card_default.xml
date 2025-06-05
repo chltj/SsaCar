@@ -4,22 +4,25 @@
     android:height="24dp"
     android:viewportWidth="40"
     android:viewportHeight="24">
-    <rect
+
+    <!-- 카드 배경 -->
+    <path
         android:fillColor="#E0E0E0"
-        android:width="40"
-        android:height="24"
-        android:rx="2" />
-    <rect
+        android:pathData="M2,0H38C39.1,0 40,0.9 40,2V22C40,23.1 39.1,24 38,24H2C0.9,24 0,23.1 0,22V2C0,0.9 0.9,0 2,0Z" />
+
+    <!-- 마그네틱 스트라이프 -->
+    <path
         android:fillColor="#BDBDBD"
-        android:x="2"
-        android:y="8"
-        android:width="36"
-        android:height="3" />
-    <rect
+        android:pathData="M0,8H40V11H0V8Z" />
+
+    <!-- 칩 -->
+    <path
         android:fillColor="#757575"
-        android:x="30"
-        android:y="15"
-        android:width="6"
-        android:height="2"
-        android:rx="1" />
+        android:pathData="M6,14H12V18H6V14Z" />
+
+    <!-- 카드 번호 표시 -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M30,15H36V17H30V15Z" />
+
 </vector>

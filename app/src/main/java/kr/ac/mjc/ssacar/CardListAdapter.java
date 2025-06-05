@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import kr.ac.mjc.ssacar.model.PaymentCard;
+import kr.ac.mjc.ssacar.PaymentCard;
 
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardViewHolder> {
 
@@ -63,7 +63,6 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardVi
         // 기본 카드 표시
         if (card.isDefault()) {
             holder.tvDefaultBadge.setVisibility(View.VISIBLE);
-            holder.itemView.setBackgroundResource(R.drawable.card_item_selected_background);
         } else {
             holder.tvDefaultBadge.setVisibility(View.GONE);
             holder.itemView.setBackgroundResource(R.drawable.card_item_background);

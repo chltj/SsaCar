@@ -56,9 +56,6 @@ public class CardRegistrationActivity extends AppCompatActivity {
 
         // 카드 정보 표시
         tvCardType = findViewById(R.id.tv_card_type);
-        tvCardPreview = findViewById(R.id.tv_card_preview);
-        ivCardType = findViewById(R.id.iv_card_type);
-        cardPreviewLayout = findViewById(R.id.card_preview_layout);
 
         // 버튼들
         btnRegisterCard = findViewById(R.id.btn_register_card);
@@ -400,6 +397,7 @@ public class CardRegistrationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         showCancelDialog();
     }
 }

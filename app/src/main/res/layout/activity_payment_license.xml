@@ -101,7 +101,7 @@
             android:layout_marginBottom="16dp"
             android:alpha="0.3"
             android:src="@drawable/ic_credit_card_empty"
-            android:tint="#CCCCCC" />
+            app:tint="#CCCCCC" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -125,7 +125,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:background="@drawable/button_primary"
+
             android:onClick="goToCardRegistration"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
