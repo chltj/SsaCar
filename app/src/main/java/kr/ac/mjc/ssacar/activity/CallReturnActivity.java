@@ -237,11 +237,9 @@ public class CallReturnActivity extends AppCompatActivity implements OnMapReadyC
             // 맵 클릭 리스너 - 클릭한 위치에 마커 이동
             this.mGoogleMap.setOnMapClickListener(latLng -> {
                 setLocationMarker(latLng, "선택된 위치");
-                convertLatLngToAddress(latLng, "터치로 선택된 위치");
-
-                // 검색 텍스트도 업데이트
-                searchText.setText("터치로 선택된 위치");
+                convertLatLngToAddress(latLng, null);  // 주소 변환이 완료된 후에 searchText에 주소 세팅
             });
+
 
             // 마커 드래그 리스너
             this.mGoogleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
@@ -367,10 +365,15 @@ public class CallReturnActivity extends AppCompatActivity implements OnMapReadyC
 
             mainHandler.post(() -> {
                 selectedAddress = finalAddress;
+
+                // searchText에도 주소를 표시하도록 추가
+                searchText.setText(finalAddress); // 👈 주소가 직접 표시됨
+
                 updateLocationInfo(latLng, selectedPlaceName, finalAddress, finalDetailedAddress);
             });
         });
     }
+
 
     // 위치 정보 업데이트 메서드 (주소 포함)
     private void updateLocationInfo(LatLng latLng, String placeName, String address, String detailedAddress) {
