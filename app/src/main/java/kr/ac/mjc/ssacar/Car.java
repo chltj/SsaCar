@@ -9,6 +9,7 @@ public class Car {
     private String fuelEfficiency;
     private String carCode;
 
+
     // 기존 생성자 (로컬 이미지용)
     public Car(String name, String price, int imageResId) {
         this.name = name;

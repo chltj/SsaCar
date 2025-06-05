@@ -7,69 +7,54 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-        <!-- 차량 이미지 -->
+        <!-- 차량 이미지 (정사각형) -->
         <ImageView
             android:id="@+id/image_car"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
-            android:contentDescription="차량 이미지" />
+            android:contentDescription="차량 이미지"
+            android:layout_marginEnd="12dp"
+           />
 
-        <!-- 차량 이름 + 날짜/시간 -->
-        <TextView
-            android:id="@+id/text_car_name"
-            android:layout_width="wrap_content"
+        <!-- 차량 정보 텍스트 -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="차량 이름"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginTop="12dp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="대여 일시"
-            android:textColor="#555555"
-            android:layout_marginTop="4dp" />
+            <TextView
+                android:id="@+id/text_car_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="차량 이름"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
 
-        <!-- 대여·반납 장소 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="대여 장소"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            <TextView
+                android:id="@+id/text_pickup_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="대여 장소"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:layout_marginTop="4dp" />
 
-        <TextView
-            android:id="@+id/text_pickup_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="서울 강남구 역삼동 123-45" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="반납 장소"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp" />
-
-        <TextView
-            android:id="@+id/text_return_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="서울 종로구 종로3가 100" />
-
-        <!-- 상태 -->
-        <TextView
-            android:id="@+id/text_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="가지러가기"
-            android:textStyle="bold"
-            android:textColor="#1E88E5"
-            android:layout_marginTop="16dp" />
+            <TextView
+                android:id="@+id/text_return_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="반납 장소"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
     </LinearLayout>
+
 </ScrollView>

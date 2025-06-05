@@ -10,40 +10,58 @@
         android:padding="16dp">
 
         <!-- 🔼 상단 앱바 (뒤로가기 버튼 + 차량 번호 + 남은 시간) -->
+        <!-- 🔽 차량 정보 표시 영역 추가 -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal"
-            android:background="#6C77FF"
-            android:gravity="center_vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="#F5F5F5">
 
             <ImageView
-                android:id="@+id/back_button"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/ic_arrow_back"
-                android:contentDescription="뒤로가기" />
+                android:id="@+id/image_car"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="12dp"
+                android:src="@drawable/placeholder" />
 
             <TextView
+                android:id="@+id/text_car_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="49하1234"
-                android:textColor="#FFFFFF"
+                android:text="차량명"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginStart="16dp" />
+                android:textColor="#000000"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이용 시간"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/text_pickup_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="대여 위치"
+                android:textSize="14sp"
+                android:layout_marginBottom="2dp" />
+
+            <TextView
+                android:id="@+id/text_return_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="반납 위치"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
         </LinearLayout>
 
-        <!-- 🕒 남은 시간 텍스트 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="3시간 2분 남음"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:textColor="#000000"/>
+
 
         <!-- 🔑 상단 버튼 6개 (2열, 3행) -->
         <GridLayout

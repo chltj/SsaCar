@@ -185,12 +185,19 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void finishPayment() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("payment_completed", true);
-        intent.putExtra("vehicle_name", selectedVehicle != null ? selectedVehicle.getName() : "");
-        intent.putExtra("total_price", totalPrice);
+        Intent intent = new Intent(this, SmartKeyActivity.class);
+
+        intent.putExtra("carName", selectedVehicle != null ? selectedVehicle.getName() : "차량명 없음");
+        intent.putExtra("carImageUrl", selectedVehicle != null ? selectedVehicle.getImageUrl() : "");
+        intent.putExtra("startTime", departureTime);
+        intent.putExtra("endTime", arrivalTime);
+        intent.putExtra("pickupLocation", placeName);
+        intent.putExtra("returnLocation", address);
+
         startActivity(intent);
         finish();
     }
+
+
+
 }
