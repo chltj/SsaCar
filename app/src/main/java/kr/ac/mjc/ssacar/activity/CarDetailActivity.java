@@ -8,11 +8,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.io.IOException;
 
 import kr.ac.mjc.ssacar.R;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class CarDetailActivity extends AppCompatActivity {
     private static final String TAG = "CarDetailActivity";
@@ -63,6 +75,51 @@ public class CarDetailActivity extends AppCompatActivity {
         }
     }
 
+
+    public void getApiInfo(String carName){
+        Log.d("getApiInfo",carName);
+        // URL 인코딩을 위해 키워드 처리
+        String encodedKeyword = carName.replace("현대 ", "");
+        String url = "https://www.hyundai.com/kr/ko/e/api/search/search/search?query=" + encodedKeyword + "&collection=EP_TOTAL_ALL&sort=RANK&viewCount=10&pageNum=1";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                .addHeader("Accept", "application/json")
+                .build();
+        OkHttpClient client =new OkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String body = response.body().string();
+                Log.d("searchResults",body);
+                JsonObject jsonObject = new Gson().fromJson(body, JsonObject.class);
+                JsonArray collections = jsonObject.getAsJsonObject("data").getAsJsonArray("collections");
+                JsonObject collection=collections.get(0).getAsJsonObject();
+                JsonArray documents=collection.get("document").getAsJsonArray();
+                JsonObject document=documents.get(0).getAsJsonObject();
+                JsonElement element=document.get("URL_ADR_SBC");
+
+                String url=element.getAsString();
+                Log.d("url",url);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(carImageView).load("https://www.hyundai.com/"+url).into(carImageView);
+                    }
+                });
+
+            }
+        });
+    }
+
+
     private void initViews() {
         try {
             carImageView = findViewById(R.id.car_detail_image);
@@ -99,6 +156,7 @@ public class CarDetailActivity extends AppCompatActivity {
                 carImageUrl = intent.getStringExtra("car_image_url");
                 carCode = intent.getStringExtra("car_code");
 
+                getApiInfo(carName);
                 Log.d(TAG, "받은 차량 정보:");
                 Log.d(TAG, "이름: " + carName);
                 Log.d(TAG, "가격: " + carPrice);
