@@ -142,7 +142,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:onClick="goToCustomer">
+            android:onClick="goToCustomer"
+            tools:ignore="OnClick">
 
             <ImageView
                 android:layout_width="36dp"
@@ -186,7 +187,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:onClick="goToPayment">
+            android:onClick="goToPayment"
+            tools:ignore="OnClick">
 
             <ImageView
                 android:layout_width="36dp"
@@ -196,7 +198,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="결제·면허"
+                android:text="결제"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
@@ -208,17 +210,18 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:onClick="goToCredit">
+            android:onClick="goTodrive"
+            tools:ignore="OnClick">
 
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/ic_credit" />
+                android:src="@drawable/drive" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="내 크레딧"
+                android:text="면허"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>

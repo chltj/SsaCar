@@ -356,4 +356,19 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, "기본 차량 목록을 표시합니다.", Toast.LENGTH_SHORT).show();
     }
+    public void goToPayment(View view) {
+        try {
+            Log.d(TAG, "결제 화면으로 이동 시도");
+
+            // 결제 액티비티가 있다면 실제 결제 화면으로 이동
+            Intent intent = new Intent(this, PaymentLicenseActivity.class);
+            startActivity(intent);
+
+        } catch (Exception e) {
+            Log.e(TAG, "결제 화면 이동 실패: " + e.getMessage());
+
+            // PaymentActivity가 없거나 오류가 발생한 경우
+            Toast.makeText(this, "결제 기능은 준비 중입니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

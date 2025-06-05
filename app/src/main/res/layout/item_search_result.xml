@@ -2,95 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="16dp"
-    android:background="?attr/selectableItemBackground"
-    android:gravity="center_vertical">
+    android:background="?attr/selectableItemBackground">
 
-    <!-- 위치 아이콘 -->
     <TextView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:text="📍"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:layout_marginEnd="12dp" />
-
-    <!-- 장소 정보 -->
-    <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/place_name_tv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:text="장소명"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end" />
 
-        <!-- 장소명과 거리 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/place_name_text_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="장소명"
-                android:textSize="16sp"
-                android:textColor="#333333"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:ellipsize="end" />
-
-            <TextView
-                android:id="@+id/distance_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1.2km"
-                android:textSize="12sp"
-                android:textColor="#999999"
-                android:background="#E8F5E8"
-                android:padding="4dp"
-                android:layout_marginStart="8dp"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <!-- 카테고리 -->
-        <TextView
-            android:id="@+id/category_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="카테고리"
-            android:textSize="12sp"
-            android:textColor="#666666"
-            android:layout_marginTop="2dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:visibility="gone" />
-
-        <!-- 주소 -->
-        <TextView
-            android:id="@+id/address_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="주소"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="4dp"
-            android:maxLines="2"
-            android:ellipsize="end" />
-
-    </LinearLayout>
-
-    <!-- 선택 화살표 -->
     <TextView
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:text="→"
-        android:gravity="center"
+        android:id="@+id/address_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="주소"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/category_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="카테고리"
         android:textSize="12sp"
-        android:textColor="#CCCCCC"
-        android:layout_marginStart="8dp" />
+        android:textColor="#999999"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#F0F0F0" />
 
 </LinearLayout>

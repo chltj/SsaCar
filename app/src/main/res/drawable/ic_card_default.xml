@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="24dp"
+    android:viewportWidth="40"
+    android:viewportHeight="24">
+    <rect
+        android:fillColor="#E0E0E0"
+        android:width="40"
+        android:height="24"
+        android:rx="2" />
+    <rect
+        android:fillColor="#BDBDBD"
+        android:x="2"
+        android:y="8"
+        android:width="36"
+        android:height="3" />
+    <rect
+        android:fillColor="#757575"
+        android:x="30"
+        android:y="15"
+        android:width="6"
+        android:height="2"
+        android:rx="1" />
+</vector>
