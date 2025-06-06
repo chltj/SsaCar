@@ -97,24 +97,38 @@ public class CarDetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                String body = response.body().string();
-                Log.d("searchResults",body);
-                JsonObject jsonObject = new Gson().fromJson(body, JsonObject.class);
-                JsonArray collections = jsonObject.getAsJsonObject("data").getAsJsonArray("collections");
-                JsonObject collection=collections.get(0).getAsJsonObject();
-                JsonArray documents=collection.get("document").getAsJsonArray();
-                JsonObject document=documents.get(0).getAsJsonObject();
-                JsonElement element=document.get("URL_ADR_SBC");
+                try {
+                    String body = response.body().string();
+                    Log.d("searchResults", body);
 
-                String url=element.getAsString();
-                Log.d("url",url);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(carImageView).load("https://www.hyundai.com/"+url).into(carImageView);
+                    JsonObject jsonObject = new Gson().fromJson(body, JsonObject.class);
+                    JsonArray collections = jsonObject.getAsJsonObject("data").getAsJsonArray("collections");
+
+                    // ★ 핵심: 배열 크기 확인
+                    if (collections.size() > 0) {
+                        JsonObject collection = collections.get(0).getAsJsonObject();
+                        JsonArray documents = collection.get("document").getAsJsonArray();
+
+                        // ★ 핵심: documents 배열 크기 확인
+                        if (documents.size() > 0) {
+                            JsonObject document = documents.get(0).getAsJsonObject();
+                            JsonElement element = document.get("URL_ADR_SBC");
+
+                            if (element != null && !element.isJsonNull()) {
+                                String url = element.getAsString();
+                                Log.d("url", url);
+
+                                runOnUiThread(() -> {
+                                    Glide.with(carImageView)
+                                            .load("https://www.hyundai.com/" + url)
+                                            .into(carImageView);
+                                });
+                            }
+                        }
                     }
-                });
-
+                } catch (Exception e) {
+                    Log.e(TAG, "API 처리 실패", e);
+                }
             }
         });
     }

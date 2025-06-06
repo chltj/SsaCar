@@ -44,6 +44,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
         holder.carName.setText(car.getName());
         holder.carPrice.setText(car.getPrice());
 
+
         // 이미지 설정 (온라인 이미지 우선, 없으면 로컬 이미지)
         if (car.hasOnlineImage()) {
             // 온라인 이미지 사용 (Glide)
@@ -108,4 +109,5 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
             carImage = itemView.findViewById(R.id.carImage);
         }
     }
+
 }
