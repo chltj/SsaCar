@@ -9,9 +9,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import kr.ac.mjc.ssacar.R;
 
+import android.widget.TextView;
+
 public class SamrtKeyActivity extends AppCompatActivity {
     private ImageView btnUnlock, btnLock, btnCustomer, btnHazard, btnHorn, btnExtend, btnReturnNow, btnBack;
 
+    private TextView tvCarName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +22,19 @@ public class SamrtKeyActivity extends AppCompatActivity {
 
         initViews();
         setupListeners();
+        String carName = getIntent().getStringExtra("carName");
+        String engineType = getIntent().getStringExtra("engineType");
+        String placeName = getIntent().getStringExtra("placeName");
+        String address = getIntent().getStringExtra("address");
+        String departureTime = getIntent().getStringExtra("departureTime");
+        String arrivalTime = getIntent().getStringExtra("arrivalTime");
+        String imageUrl = getIntent().getStringExtra("imageUrl");
+
+        Toast.makeText(this, carName + " 스마트키 화면", Toast.LENGTH_SHORT).show();
+
+        if (carName != null && !carName.isEmpty()) {
+            tvCarName.setText(carName + " 스마트키");
+        }
     }
     private void initViews() {
         btnUnlock = findViewById(R.id.btn_unlock);
@@ -29,6 +45,7 @@ public class SamrtKeyActivity extends AppCompatActivity {
         btnExtend = findViewById(R.id.btn_extend);
         btnReturnNow = findViewById(R.id.btn_return_now);
         btnBack = findViewById(R.id.back_button);
+        tvCarName = findViewById(R.id.tv_car_name);
     }
 
     private void setupListeners() {
@@ -40,6 +57,7 @@ public class SamrtKeyActivity extends AppCompatActivity {
         btnExtend.setOnClickListener(v -> showToast("반납 시간이 연장되었습니다."));
         btnReturnNow.setOnClickListener(v -> showToast("차량을 즉시 반납합니다."));
         btnBack.setOnClickListener(v -> finish());
+
     }
 
     private void showToast(String message) {

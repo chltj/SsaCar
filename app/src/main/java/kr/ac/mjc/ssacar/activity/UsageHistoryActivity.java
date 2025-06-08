@@ -1,6 +1,7 @@
 package kr.ac.mjc.ssacar.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,17 @@ public class UsageHistoryActivity extends AppCompatActivity {
         // Adapter 연결
         adapter = new UsageHistoryAdapter(historyList, this);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(item -> {
+            Intent intent = new Intent(UsageHistoryActivity.this, SamrtKeyActivity.class);
+            intent.putExtra("carName", item.getCarName());
+            intent.putExtra("engineType", item.getEngineType());
+            intent.putExtra("placeName", item.getPlaceName());
+            intent.putExtra("address", item.getAddress());
+            intent.putExtra("departureTime", item.getDepartureTime());
+            intent.putExtra("arrivalTime", item.getArrivalTime());
+            intent.putExtra("imageUrl", item.getImageUrl());
+            startActivity(intent);
+        });
     }
 
     private List<PaymentHistory> loadHistoryFromPrefs() {

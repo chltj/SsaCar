@@ -49,6 +49,11 @@ public class UsageHistoryAdapter extends RecyclerView.Adapter<UsageHistoryAdapte
         } else {
             holder.carImage.setImageResource(R.drawable.sample_car);
         }
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(item);
+            }
+        });
     }
 
     @Override
@@ -69,5 +74,14 @@ public class UsageHistoryAdapter extends RecyclerView.Adapter<UsageHistoryAdapte
             timeTv = itemView.findViewById(R.id.time_tv);
             priceTv = itemView.findViewById(R.id.price_tv);
         }
+    }
+    public interface OnItemClickListener {
+        void onItemClick(PaymentHistory item);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }

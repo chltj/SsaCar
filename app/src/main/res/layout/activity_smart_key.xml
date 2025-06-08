@@ -26,6 +26,7 @@
                 android:contentDescription="뒤로가기" />
 
             <TextView
+                android:id="@+id/tv_car_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -33,6 +34,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <!-- 🕒 남은 시간 텍스트 -->
