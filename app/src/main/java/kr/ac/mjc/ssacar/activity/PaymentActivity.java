@@ -179,6 +179,7 @@ public class PaymentActivity extends AppCompatActivity {
     private void calculatePrice() {
         totalPrice = basePrice + insurancePrice;
         finalPriceTv.setText("총 결제금액: " + String.format("%,d원", totalPrice));
+        btnPay.setText("총 " + String.format("%,d원", totalPrice) + " 결제하기");
     }
 
     private void processPayment() {

@@ -3,14 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:padding="24dp">
 
     <TextView
+        android:id="@+id/rent_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="장기렌트 화면"
-        android:textSize="22sp"
+        android:text="장기 렌트 기간 선택"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#000000" />
+        android:layout_marginBottom="16dp" />
+
+    <Spinner
+        android:id="@+id/month_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown" />
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="다음으로"
+        android:layout_marginTop="32dp" />
 </LinearLayout>
