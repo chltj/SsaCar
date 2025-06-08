@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="40dp"
+    android:width="48dp"
     android:height="24dp"
-    android:viewportWidth="40"
+    android:viewportWidth="48"
     android:viewportHeight="24">
 
-    <!-- 둥근 모서리 배경 -->
     <path
         android:fillColor="#006FCF"
-        android:pathData="M2,0H38C39.1,0 40,0.9 40,2V22C40,23.1 39.1,24 38,24H2C0.9,24 0,23.1 0,22V2C0,0.9 0.9,0 2,0Z" />
+        android:pathData="M0,0 L48,0 L48,24 L0,24 Z" />
 
-    <!-- AMEX 로고 - 왼쪽 부분 -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M8,8H12L14,11L16,8H20V16H16L14,13L12,16H8V8Z" />
+        android:pathData="M6,6 L12,6 L14,9 L16,6 L22,6 L18,12 L22,18 L16,18 L14,15 L12,18 L6,18 L10,12 Z" />
 
-    <!-- AMEX 로고 - 오른쪽 선들 -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M22,10H30V12H22V10Z" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M22,14H30V16H22V14Z" />
-
+        android:pathData="M26,6 L42,6 L42,8 L28,8 L28,10 L40,10 L40,12 L28,12 L28,14 L40,14 L40,16 L28,16 L28,18 L42,18 L42,18 L26,18 Z" />
 </vector>

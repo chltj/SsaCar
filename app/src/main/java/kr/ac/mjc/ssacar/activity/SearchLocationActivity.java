@@ -67,7 +67,6 @@ public class SearchLocationActivity extends AppCompatActivity implements View.On
         searchResultRecyclerView = findViewById(R.id.search_result_recycler_view);
 
         // 검색 버튼과 뒤로가기 버튼 찾기 (ID는 레이아웃에 따라 조정)
-        searchButton = findViewById(R.id.search_button);
         if (searchButton == null) {
             // ID가 다를 수 있으니 다른 가능한 ID들로 시도
             searchButton = findViewById(R.id.btn_search);

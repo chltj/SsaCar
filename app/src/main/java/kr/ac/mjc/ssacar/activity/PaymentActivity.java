@@ -16,6 +16,10 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import kr.ac.mjc.ssacar.PaymentCard;
 import kr.ac.mjc.ssacar.R;
 import kr.ac.mjc.ssacar.Vehicle;
 
@@ -70,16 +74,28 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void setupSpinner() {
-        String[] paymentMethods = {
-                "신용카드 선택",
-                "국민카드 (****-1234)",
-                "삼성카드 (****-5678)",
-                "현대카드 (****-9012)",
-                "토스페이",
-                "카카오페이",
-                "네이버페이"
-        };
+        List<PaymentCard> cardList = new ArrayList<>();
+        List<String> paymentMethods = new ArrayList<>();
 
+        // 등록된 카드가 있다면 먼저 추가
+        if (cardList != null && !cardList.isEmpty()) {
+            for (PaymentCard card : cardList) {
+                paymentMethods.add(card.getCardType() + " (" + card.getMaskedCardNumber() + ")");
+            }
+        } else {
+            paymentMethods.add("신용카드 선택");
+        }
+
+        // 항상 들어가는 페이 결제 수단들
+        List<String> payMethods = new ArrayList<>();
+        payMethods.add("토스페이");
+        payMethods.add("카카오페이");
+        payMethods.add("네이버페이");
+
+        // 결합
+        paymentMethods.addAll(payMethods);
+
+        // Spinner 어댑터 설정
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -163,7 +179,6 @@ public class PaymentActivity extends AppCompatActivity {
     private void calculatePrice() {
         totalPrice = basePrice + insurancePrice;
         finalPriceTv.setText("총 결제금액: " + String.format("%,d원", totalPrice));
-        btnPay.setText("총 " + String.format("%,d원", totalPrice) + " 결제하기");
     }
 
     private void processPayment() {
