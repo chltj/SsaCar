@@ -142,13 +142,13 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:onClick="goToCustomer"
+            android:onClick="goToSmartkey"
             tools:ignore="OnClick">
 
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/ic_help" />
+                android:src="@drawable/ic_lock_close" />
 
             <TextView
                 android:layout_width="wrap_content"

@@ -124,6 +124,12 @@ public class MainActivity extends AppCompatActivity {
         // 예시: 다른 화면으로 이동
         Intent intent = new Intent(this, UsageHistoryActivity.class);
         startActivity(intent);
+
+    }
+    public void goToSmartkey(View view) {
+        // 원하는 동작 수행
+        Intent intent = new Intent(this, SamrtKeyActivity.class);
+        startActivity(intent);
     }
     private void setupIconListeners() {
         notificationIcon.setOnClickListener(new View.OnClickListener() {

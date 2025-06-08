@@ -43,6 +43,7 @@
             android:gravity="center_vertical">
 
             <ImageView
+                android:id="@+id/car_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/sample_car"
@@ -151,6 +152,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="자기부담금 최대 70만원 (+₩14,300)" />
+
+            <Spinner
+                android:id="@+id/spinner_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </RadioGroup>
 
         <!-- 💳 결제 수단 -->
@@ -160,11 +166,6 @@
             android:text="결제 수단"
             android:textStyle="bold"
             android:layout_marginTop="16dp" />
-
-        <Spinner
-            android:id="@+id/spinner_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="match_parent"
@@ -206,13 +207,5 @@
             android:onClick="goToUsageHistory" />
 
         <!-- ✅ 결제 버튼 -->
-        <Button
-            android:id="@+id/btn_pay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="총 31,000원 결제하기"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#000000"
-            android:textColor="#FFFFFF" />
     </LinearLayout>
 </ScrollView>

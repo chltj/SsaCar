@@ -2,7 +2,9 @@ package kr.ac.mjc.ssacar.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,12 +18,18 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import kr.ac.mjc.ssacar.PaymentCard;
+import kr.ac.mjc.ssacar.PaymentHistory;
 import kr.ac.mjc.ssacar.R;
-import kr.ac.mjc.ssacar.Vehicle;
+import kr.ac.mjc.ssacar.Car;
 
 public class PaymentActivity extends AppCompatActivity {
 
@@ -36,7 +44,7 @@ public class PaymentActivity extends AppCompatActivity {
     CheckBox checkboxAgree;
     Button btnPay;
 
-    Vehicle selectedVehicle;
+    Car selectedVehicle;
     int basePrice = 0;
     int insurancePrice = 0;
     int totalPrice = 0;
@@ -45,6 +53,7 @@ public class PaymentActivity extends AppCompatActivity {
     String address;
     String departureTime;
     String arrivalTime;
+    private ImageView carImageView;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -71,6 +80,7 @@ public class PaymentActivity extends AppCompatActivity {
         spinnerCard = findViewById(R.id.spinner_card);
         checkboxAgree = findViewById(R.id.checkbox_agree);
         btnPay = findViewById(R.id.btn_pay);
+        carImageView = findViewById(R.id.car_image);
     }
 
     private void setupSpinner() {
@@ -137,6 +147,16 @@ public class PaymentActivity extends AppCompatActivity {
         arrivalTime = intent.getStringExtra("arrival_time");
 
         if (selectedVehicle != null) {
+            if (selectedVehicle.hasOnlineImage()) {
+                Glide.with(this)
+                        .load(selectedVehicle.getImageUrl())
+                        .placeholder(R.drawable.sample_car)
+                        .into(carImageView);
+            } else if (selectedVehicle.getImageResId() != 0) {
+                carImageView.setImageResource(selectedVehicle.getImageResId());
+            } else {
+                carImageView.setImageResource(R.drawable.sample_car); // 기본 이미지
+            }
             carNameTv.setText(selectedVehicle.getName());
             carTypeTv.setText(selectedVehicle.getEngineType());
 
@@ -200,13 +220,48 @@ public class PaymentActivity extends AppCompatActivity {
         }, 2000);
     }
 
+
+
+
     private void finishPayment() {
-        Intent intent = new Intent(this, MainActivity.class);
+        // 1. 결제 정보 저장
+        SharedPreferences prefs = getSharedPreferences("payment_history", MODE_PRIVATE);
+        Gson gson = new Gson();
+
+
+
+        String json = prefs.getString("history_list", null);
+        List<PaymentHistory> list;
+        if (json != null) {
+            Type type = new TypeToken<List<PaymentHistory>>() {}.getType();
+            list = gson.fromJson(json, type);
+        } else {
+            list = new ArrayList<>();
+        }
+
+        // 새 결제 항목 생성 및 추가 (최신순으로 앞에 삽입)
+        PaymentHistory newItem = new PaymentHistory(
+                selectedVehicle.getName(),
+                selectedVehicle.getEngineType(),
+                placeName,
+                address,
+                departureTime,
+                arrivalTime,
+                totalPrice,
+                spinnerCard.getSelectedItem().toString(),
+                selectedVehicle.getImageUrl()
+        );
+
+        list.add(0, newItem);
+        prefs.edit().putString("history_list", gson.toJson(list)).apply();
+        Log.d("PaymentHistory", "Saved list size: " + list.size());
+
+        // 2. 다음 화면으로 이동
+        Intent intent = new Intent(this, UsageHistoryActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("payment_completed", true);
-        intent.putExtra("vehicle_name", selectedVehicle != null ? selectedVehicle.getName() : "");
-        intent.putExtra("total_price", totalPrice);
         startActivity(intent);
         finish();
     }
+
+
 }

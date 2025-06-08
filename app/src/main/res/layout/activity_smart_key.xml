@@ -28,22 +28,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="49하1234"
+                android:layout_marginStart="16dp"
+                android:text="차 이름"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginStart="16dp" />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- 🕒 남은 시간 텍스트 -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="3시간 2분 남음"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:textColor="#000000"/>
 
         <!-- 🔑 상단 버튼 6개 (2열, 3행) -->
         <GridLayout
