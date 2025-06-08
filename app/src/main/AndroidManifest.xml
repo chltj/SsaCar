@@ -52,6 +52,7 @@
         <activity android:name=".activity.TimeSettingActivity" android:exported="false"/>
         <activity android:name=".activity.PaymentActivity"/>
         <activity android:name=".activity.CallReturnActivity"/>
+        <activity android:name=".activity.signupActivity" />
 
     </application>
     <!-- HTTP 트래픽 허용 (Android 9+ 대응) -->
