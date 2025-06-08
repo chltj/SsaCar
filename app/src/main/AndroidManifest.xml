@@ -53,6 +53,10 @@
         <activity android:name=".activity.PaymentActivity"/>
         <activity android:name=".activity.CallReturnActivity"/>
         <activity android:name=".activity.SearchLocationActivity"/>
+        <activity android:name=".activity.CardRegistrationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.signupActivity"/>
 
     </application>
     <!-- HTTP 트래픽 허용 (Android 9+ 대응) -->

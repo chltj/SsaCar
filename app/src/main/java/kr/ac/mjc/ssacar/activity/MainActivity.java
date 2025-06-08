@@ -6,12 +6,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -29,6 +33,10 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import android.os.Handler;
+import android.os.Looper;
+import java.util.concurrent.TimeUnit;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -38,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
     private CarAdapter carAdapter;
     private List<Car> carList;
     private OkHttpClient client;
+    private ImageView carImageView;
+    private TextView carNameText;
+    private TextView carPriceText;
+    private String imageUrl;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,16 +146,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 현대자동차 API에서 차량 데이터 로드
+    // ★ 이렇게 수정하세요!
     private void loadCarsFromAPI() {
         Log.d(TAG, "현대자동차 API에서 차량 데이터 로드 시작");
 
-        // 먼저 기본 차량 추가 (로딩 중 표시용)
         addLoadingCars();
 
-        // 인기 차량들을 검색하여 메인에 표시
-        String[] popularCars = {"아이오닉", "산타페", "투싼", "쏘나타", "캐스퍼"};
+        // 더 많은 현대차 모델들
+        String[] allHyundaiCars = {
+                // 인기 모델
+                "아이오닉 5", "산타페", "투싼", "쏘나타", "아반떼",
+                // 프리미엄/대형
+                "팰리세이드", "그랜저", "제네시스 G90", "제네시스 GV70", "제네시스 G80",
+                // 소형/경차
+                "캐스퍼", "코나", "베뉴", "벨로스터",
+                // 전기차
+                "아이오닉 6", "코나 일렉트릭", "포터 일렉트릭",
+                // 상용차/기타
+                "스타리아", "포터"
+        };
 
-        for (String carName : popularCars) {
+        for (String carName : allHyundaiCars) {
             loadCarsByQuery(carName);
         }
     }
@@ -348,13 +372,286 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "기본 차량 추가");
 
         carList.clear();
-        carList.add(new Car("현대 아반떼", "₩20,000 / 1시간", R.drawable.sample_car));
-        carList.add(new Car("기아 쏘렌토", "₩25,000 / 1시간", R.drawable.sample_car));
-        carList.add(new Car("쉐보레 스파크", "₩18,000 / 1시간", R.drawable.sample_car));
+
+        // ★ 더 많은 현대차 모델들 추가
+        // 인기 세단/해치백
+        carList.add(new Car("현대 아반떼", "₩20,000 / 1시간", R.drawable.sample_car, "", "가솔린", "14.2km/l", "AVANTE"));
+        carList.add(new Car("현대 쏘나타", "₩25,000 / 1시간", R.drawable.sample_car, "", "가솔린", "13.8km/l", "SONATA"));
+        carList.add(new Car("현대 그랜저", "₩35,000 / 1시간", R.drawable.sample_car, "", "가솔린", "11.5km/l", "GRANDEUR"));
+
+        // SUV 라인업
+        carList.add(new Car("현대 산타페", "₩30,000 / 1시간", R.drawable.sample_car, "", "가솔린", "12.1km/l", "SANTAFE"));
+        carList.add(new Car("현대 투싼", "₩28,000 / 1시간", R.drawable.sample_car, "", "가솔린", "13.0km/l", "TUCSON"));
+        carList.add(new Car("현대 팰리세이드", "₩45,000 / 1시간", R.drawable.sample_car, "", "가솔린", "10.2km/l", "PALISADE"));
+        carList.add(new Car("현대 코나", "₩22,000 / 1시간", R.drawable.sample_car, "", "가솔린", "14.5km/l", "KONA"));
+        carList.add(new Car("현대 베뉴", "₩18,000 / 1시간", R.drawable.sample_car, "", "가솔린", "15.2km/l", "VENUE"));
+
+        // 전기차 라인업
+        carList.add(new Car("현대 아이오닉 5", "₩35,000 / 1시간", R.drawable.sample_car, "", "전기", "305km", "IONIQ5"));
+        carList.add(new Car("현대 아이오닉 6", "₩40,000 / 1시간", R.drawable.sample_car, "", "전기", "429km", "IONIQ6"));
+        carList.add(new Car("현대 코나 일렉트릭", "₩30,000 / 1시간", R.drawable.sample_car, "", "전기", "259km", "KONA_EV"));
+
+        // 소형차/경차
+        carList.add(new Car("현대 캐스퍼", "₩15,000 / 1시간", R.drawable.sample_car, "", "가솔린", "17.3km/l", "CASPER"));
+        carList.add(new Car("현대 벨로스터", "₩25,000 / 1시간", R.drawable.vel, "", "가솔린", "12.8km/l", "VELOSTER"));
+
+        // 제네시스 라인업
+        carList.add(new Car("제네시스 G90", "₩60,000 / 1시간", R.drawable.g90, "", "가솔린", "9.1km/l", "G90"));
+        carList.add(new Car("제네시스 GV70", "₩50,000 / 1시간", R.drawable.gv70, "", "가솔린", "10.5km/l", "GV70"));
+        carList.add(new Car("제네시스 G80", "₩55,000 / 1시간", R.drawable.g80, "", "가솔린", "10.2km/l", "G80"));
+
+        // 상용차
+        carList.add(new Car("현대 스타리아", "₩40,000 / 1시간", R.drawable.sample_car, "", "디젤", "11.3km/l", "STARIA"));
+        carList.add(new Car("현대 포터", "₩25,000 / 1시간", R.drawable.sample_car, "", "디젤", "12.5km/l", "PORTER"));
 
         carAdapter.notifyDataSetChanged();
 
-        Toast.makeText(this, "기본 차량 목록을 표시합니다.", Toast.LENGTH_SHORT).show();
+        // ★ 모든 차량의 실제 이미지로 교체
+        updateAllCarsWithRealImages();
+    }
+
+    // ★ 모든 차량의 이미지를 업데이트하는 새로운 메서드
+    private void updateAllCarsWithRealImages() {
+        Log.d(TAG, "실제 이미지 업데이트 시작");
+        for (int i = 0; i < carList.size(); i++) {
+            Car car = carList.get(i);
+            String searchKeyword = car.getName().replace("현대 ", "").replace("제네시스 ", "");
+            updateCarImage(i, searchKeyword);
+
+            // API 호출 간격을 두어 서버 부하 방지
+            try {
+                Thread.sleep(100); // 0.1초 간격
+            } catch (InterruptedException e) {
+                Log.w(TAG, "Thread sleep 중단됨");
+            }
+        }
+        updateCarImageSequentially(0);
+    }
+
+    private void updateCarImageSequentially(int currentIndex) {
+
+
+        if (currentIndex >= carList.size()) {
+            Log.d(TAG, "모든 차량 이미지 업데이트 완료");
+            return;
+        }
+
+        Car car = carList.get(currentIndex);
+        String searchKeyword = getOptimizedKeyword(car.getName());
+        Log.d("SEARCH_KEYWORD", "검색할 키워드: " + car.getName() + " -> " + searchKeyword);
+
+        Log.d(TAG, "이미지 업데이트 중: " + car.getName() + " (인덱스: " + currentIndex + ")");
+
+        String url = "https://www.hyundai.com/kr/ko/e/api/search/search/search?query=" + searchKeyword + "&collection=EP_TOTAL_ALL&sort=RANK&viewCount=10&pageNum=1";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                .addHeader("Accept", "application/json")
+                .build();
+
+        // ★ 각 요청마다 새로운 클라이언트 생성 (충돌 방지)
+        OkHttpClient sequentialClient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
+
+        sequentialClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e(TAG, "이미지 API 호출 실패: " + car.getName(), e);
+
+                // ★ 실패해도 다음 차량 계속 처리 (500ms 후)
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    updateCarImageSequentially(currentIndex + 1);
+                }, 500);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                try {
+                    String body = response.body().string();
+                    Log.d("API_RESPONSE", "응답 성공: " + car.getName());
+
+                    JsonObject jsonObject = new Gson().fromJson(body, JsonObject.class);
+                    JsonArray collections = jsonObject.getAsJsonObject("data").getAsJsonArray("collections");
+
+                    if (collections.size() > 0) {
+                        JsonObject collection = collections.get(0).getAsJsonObject();
+                        JsonArray documents = collection.get("document").getAsJsonArray();
+
+                        if (documents.size() > 0) {
+                            JsonObject document = documents.get(0).getAsJsonObject();
+                            JsonElement element = document.get("URL_ADR_SBC");
+
+                            if (element != null && !element.isJsonNull()) {
+                                String imageUrl = "https://www.hyundai.com" + element.getAsString();
+                                Log.d("IMAGE_URL", car.getName() + " -> " + imageUrl);
+
+                                runOnUiThread(() -> {
+                                    try {
+                                        if (currentIndex < carList.size()) {
+                                            Car targetCar = carList.get(currentIndex);
+                                            if (targetCar != null) {
+                                                // ★ 이미지 URL 업데이트
+                                                targetCar.setImageUrl(imageUrl);
+                                                carAdapter.notifyItemChanged(currentIndex);
+                                                Log.d(TAG, "✅ 이미지 업데이트 성공: " + targetCar.getName());
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "이미지 URL 업데이트 실패", e);
+                                    }
+
+                                    // ★ 다음 차량 처리 (300ms 후, UI 업데이트 안정화)
+                                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                        updateCarImageSequentially(currentIndex + 1);
+                                    }, 300);
+                                });
+                            } else {
+                                Log.w(TAG, "URL_ADR_SBC가 null: " + car.getName());
+                                // ★ 다음 차량 계속 처리
+                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                    updateCarImageSequentially(currentIndex + 1);
+                                }, 300);
+                            }
+                        } else {
+                            Log.w(TAG, "documents 배열이 비어있음: " + car.getName());
+                            // ★ 다음 차량 계속 처리
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                updateCarImageSequentially(currentIndex + 1);
+                            }, 300);
+                        }
+                    } else {
+                        Log.w(TAG, "collections 배열이 비어있음: " + car.getName());
+                        // ★ 다음 차량 계속 처리
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            updateCarImageSequentially(currentIndex + 1);
+                        }, 300);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "이미지 API 처리 실패: " + car.getName(), e);
+                    // ★ 다음 차량 계속 처리
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        updateCarImageSequentially(currentIndex + 1);
+                    }, 300);
+                }
+            }
+        });
+
+    }
+
+    // ★ 검색 키워드 최적화 메서드
+    private String getOptimizedKeyword(String carName) {
+        // ★ 직접 매핑으로 확실하게 (수정된 버전)
+        switch (carName) {
+            case "현대 아반떼": return "아반떼";
+            case "현대 쏘나타": return "쏘나타";
+            case "현대 그랜저": return "그랜저";
+            case "현대 산타페": return "산타페";
+            case "현대 투싼": return "투싼";
+            case "현대 팰리세이드": return "팰리세이드";
+            case "현대 코나": return "코나";
+            case "현대 베뉴": return "베뉴";
+            case "현대 아이오닉 5": return "아이오닉5";
+            case "현대 아이오닉 6": return "아이오닉6";
+            case "현대 코나 일렉트릭": return "코나";
+            case "현대 캐스퍼": return "캐스퍼";
+            // ★ 벨로스터 키워드 변경 시도
+            case "현대 벨로스터": return "벨로스터";  // 다시 N 추가
+            // ★ 제네시스 키워드 변경 시도
+            case "제네시스 G90": return "GENESIS"; // 브랜드명만
+            case "제네시스 GV70": return "GV70 GENESIS"; // 순서 바꿔서
+            case "제네시스 G80": return "G80 GENESIS";
+            case "현대 스타리아": return "스타리아";
+            case "현대 포터": return "포터";
+            default:
+                String keyword = carName.replace("현대 ", "").replace("제네시스 ", "");
+                Log.d("SEARCH_KEYWORD", carName + " -> " + keyword);
+                return keyword;
+        }
+    }
+
+
+    // updateCarImage 메서드를 완전히 수정:
+    private void updateCarImage(int index, String carName) {
+        Log.d("updateCarImage", carName + " (index: " + index + ")");
+
+        String encodedKeyword = carName.replace("현대 ", "");
+        String url = "https://www.hyundai.com/kr/ko/e/api/search/search/search?query=" + encodedKeyword + "&collection=EP_TOTAL_ALL&sort=RANK&viewCount=10&pageNum=1";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                .addHeader("Accept", "application/json")
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e(TAG, "이미지 API 호출 실패: " + carName, e);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                try {
+                    String body = response.body().string();
+                    Log.d("API_RESPONSE", "응답 성공: " + carName);
+
+                    JsonObject jsonObject = new Gson().fromJson(body, JsonObject.class);
+                    JsonArray collections = jsonObject.getAsJsonObject("data").getAsJsonArray("collections");
+
+                    if (collections.size() > 0) {
+                        JsonObject collection = collections.get(0).getAsJsonObject();
+                        JsonArray documents = collection.get("document").getAsJsonArray();
+
+                        if (documents.size() > 0) {
+                            JsonObject document = documents.get(0).getAsJsonObject();
+                            JsonElement element = document.get("URL_ADR_SBC");
+
+                            if (element != null && !element.isJsonNull()) {
+                                String imageUrl = "https://www.hyundai.com" + element.getAsString();
+                                Log.d("IMAGE_URL", carName + " -> " + imageUrl);
+
+                                runOnUiThread(() -> {
+                                    try {
+                                        if (index < carList.size()) {
+                                            Car car = carList.get(index);
+                                            if (car != null) {
+                                                Log.d(TAG, "이미지 URL 업데이트 시도: " + car.getName());
+
+                                                // ★ Car 객체의 이미지 URL 업데이트
+                                                car.setImageUrl(imageUrl);
+
+                                                // ★ RecyclerView 특정 아이템만 업데이트
+                                                carAdapter.notifyItemChanged(index);
+
+                                                Log.d(TAG, "✅ 이미지 URL 업데이트 성공: " + car.getName() + " -> " + imageUrl);
+                                            }
+                                        } else {
+                                            Log.e(TAG, "인덱스 범위 초과: " + index + " >= " + carList.size());
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "이미지 URL 업데이트 실패", e);
+                                    }
+                                });
+                            } else {
+                                Log.w(TAG, "URL_ADR_SBC가 null이거나 없음: " + carName);
+                            }
+                        } else {
+                            Log.w(TAG, "documents 배열이 비어있음: " + carName);
+                        }
+                    } else {
+                        Log.w(TAG, "collections 배열이 비어있음: " + carName);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "이미지 API 처리 실패: " + carName, e);
+                }
+            }
+        });
     }
     public void goToPayment(View view) {
         try {

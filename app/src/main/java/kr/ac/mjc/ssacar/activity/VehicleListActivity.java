@@ -2,14 +2,10 @@ package kr.ac.mjc.ssacar.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,43 +14,41 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import kr.ac.mjc.ssacar.Car;
+import kr.ac.mjc.ssacar.VehicleAdapter; // ★ VehicleAdapter 사용
 import kr.ac.mjc.ssacar.R;
-import kr.ac.mjc.ssacar.Vehicle;
-import kr.ac.mjc.ssacar.VehicleAdapter;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import android.os.Handler;
+import android.os.Looper;
+import java.util.concurrent.TimeUnit;
 
 public class VehicleListActivity extends AppCompatActivity {
 
     private static final String TAG = "VehicleListActivity";
 
-    private EditText searchEditText;
-    private Button searchButton;
     private RecyclerView vehicleRecyclerView;
-    private VehicleAdapter vehicleAdapter;
-    private ProgressBar progressBar;
-
-    private Vehicle selectedVehicle;
+    private VehicleAdapter vehicleAdapter; // ★ VehicleAdapter 사용
+    private List<Car> carList;
+    private OkHttpClient client;
     private Button selectCompleteButton;
 
-    private List<Vehicle> vehicleList;
-    private OkHttpClient client;
-    private Gson gson;
-
-    private Map<String, Integer> customPrices;
+    // ★ 선택된 차량 변수 추가
+    private Car selectedCar;
 
     private String placeName;
     private String address;
@@ -70,7 +64,7 @@ public class VehicleListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_list);
 
-        Intent intent = getIntent();
+        Intent intent = new Intent(this, PaymentActivity.class);
         placeName = intent.getStringExtra("place_name");
         address = intent.getStringExtra("address");
         latitude = intent.getDoubleExtra("latitude", 0.0);
@@ -78,48 +72,40 @@ public class VehicleListActivity extends AppCompatActivity {
         departureTime = intent.getStringExtra("departure_time");
         arrivalTime = intent.getStringExtra("arrival_time");
 
+        // ★ HTTP 클라이언트 초기화
+        client = new OkHttpClient();
+
         initViews();
-        initCustomPrices();
         setupRecyclerView();
 
-        client = new OkHttpClient();
-        gson = new Gson();
-
-        loadVehicleData();
+        // 현대자동차 API에서 차량 데이터 로드
+        loadCarsFromAPI();
     }
 
     private void initViews() {
-        searchEditText = findViewById(R.id.search_edit_text);
-        searchButton = findViewById(R.id.search_button);
         vehicleRecyclerView = findViewById(R.id.vehicle_recycler_view);
-        progressBar = findViewById(R.id.progress_bar);
         selectCompleteButton = findViewById(R.id.select_complete_button);
         locationTimeInfoTextView = findViewById(R.id.location_time_info_tv);
 
-        vehicleList = new ArrayList<>();
+        carList = new ArrayList<>();
+
+        // 헤더 타이틀 변경
+        TextView headerTitle = findViewById(R.id.header_title);
+        if (headerTitle != null) {
+            headerTitle.setText("차량 선택");
+        }
 
         String locationTimeInfo = "선택 위치: " + placeName + "\n" +
                 "출발: " + departureTime + "\n" +
                 "도착: " + arrivalTime;
         locationTimeInfoTextView.setText(locationTimeInfo);
 
-        searchButton.setOnClickListener(v -> performSearch());
-
-        searchEditText.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                performSearch();
-                return true;
-            }
-            return false;
-        });
-
         selectCompleteButton.setOnClickListener(v -> {
-            if (selectedVehicle != null) {
+            if (selectedCar != null) {
                 Intent intent = new Intent(VehicleListActivity.this, PaymentActivity.class);
-                intent.putExtra("selected_vehicle", selectedVehicle);
-                intent.putExtra("vehicle_name", selectedVehicle.getName());
-                intent.putExtra("vehicle_price", selectedVehicle.getPrice());
-                intent.putExtra("vehicle_type", selectedVehicle.getEngineType());
+                intent.putExtra("vehicle_name", selectedCar.getName());
+                intent.putExtra("vehicle_price", selectedCar.getPrice());
+                intent.putExtra("vehicle_type", selectedCar.getEngineType());
 
                 intent.putExtra("place_name", placeName);
                 intent.putExtra("address", address);
@@ -139,571 +125,454 @@ public class VehicleListActivity extends AppCompatActivity {
         ImageView backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> finish());
     }
+
+    // ★ RecyclerView 설정
+    private void setupRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        vehicleRecyclerView.setLayoutManager(layoutManager);
+
+        // ★ VehicleAdapter 생성 및 클릭 리스너 설정
+        vehicleAdapter = new VehicleAdapter(this, carList, this::onVehicleSelected);
+        vehicleRecyclerView.setAdapter(vehicleAdapter);
+
+        Log.d(TAG, "RecyclerView 설정 완료");
+    }
+
     private void updateSelectButton() {
-        if (selectedVehicle != null) {
+        if (selectedCar != null) {
             selectCompleteButton.setEnabled(true);
             selectCompleteButton.setAlpha(1.0f);
+            selectCompleteButton.setText(selectedCar.getName() + " 선택 완료");
+            selectCompleteButton.setBackgroundColor(0xFF4CAF50); // 초록색
         } else {
             selectCompleteButton.setEnabled(false);
             selectCompleteButton.setAlpha(0.5f);
+            selectCompleteButton.setText("차량을 선택해주세요");
+            selectCompleteButton.setBackgroundColor(0xFFCCCCCC); // 회색
         }
     }
 
-    private void performSearch() {
-        String keyword = searchEditText.getText().toString().trim();
-        if (TextUtils.isEmpty(keyword)) {
-            Toast.makeText(this, "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void loadCarsFromAPI() {
+        Log.d(TAG, "현대자동차 API에서 차량 데이터 로드 시작");
 
-        vehicleList.clear();
-        vehicleAdapter.notifyDataSetChanged();
-        searchVehicles(keyword);
+        addLoadingCars();
+
+        // 더 많은 현대차 모델들
+        String[] allHyundaiCars = {
+                // 인기 모델
+                "아이오닉 5", "산타페", "투싼", "쏘나타", "아반떼",
+                // 프리미엄/대형
+                "팰리세이드", "그랜저", "제네시스 G90", "제네시스 GV70", "제네시스 G80",
+                // 소형/경차
+                "캐스퍼", "코나", "베뉴", "벨로스터",
+                // 전기차
+                "아이오닉 6", "코나 일렉트릭", "포터 일렉트릭",
+                // 상용차/기타
+                "스타리아", "포터"
+        };
+
+        for (String carName : allHyundaiCars) {
+            loadCarsByQuery(carName);
+        }
     }
 
-    private void searchVehicles(String keyword) {
-        showLoading(true);
+    // 로딩 중 표시할 기본 차량들
+    private void addLoadingCars() {
+        carList.add(new Car("차량 로딩 중...", "₩로딩중", R.drawable.sample_car));
+        vehicleAdapter.notifyDataSetChanged(); // ★ vehicleAdapter 사용
 
-        // URL 인코딩을 위해 키워드 처리
-        String encodedKeyword = keyword.replace(" ", "%20");
-        String url = "https://www.hyundai.com/kr/ko/e/api/search/search/search?query=" + encodedKeyword + "&collection=EP_TOTAL_ALL&sort=RANK&viewCount=10&pageNum=1";
+        // 10초 후에 API 로딩이 실패했으면 기본 차량으로 교체
+        vehicleRecyclerView.postDelayed(() -> {
+            if (carList.size() <= 3) { // API 로딩이 별로 안됐으면
+                Log.d(TAG, "API 로딩 실패 추정, 기본 차량으로 교체");
+                addFallbackCars();
+            }
+        }, 10000);
+    }
+
+    // 특정 키워드로 차량 검색
+    private void loadCarsByQuery(String query) {
+        String apiUrl = "https://www.hyundai.com/kr/ko/e-srv/search.search-service?site_code=hmk&collection=EP_TOTAL_MODEL&query=" + query + "&start_count=0&count=3";
+
+        Log.d(TAG, "API 호출: " + query);
 
         Request request = new Request.Builder()
-                .url(url)
-                .get()
+                .url(apiUrl)
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                .addHeader("Accept", "application/json")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e(TAG, "검색 API 호출 실패: " + keyword, e);
-                runOnUiThread(() -> {
-                    showLoading(false);
-                    Toast.makeText(VehicleListActivity.this, "'" + keyword + "' 검색에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                    loadMockData(keyword); // 실패 시 목업 데이터 사용
-                });
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "API 호출 실패: " + query, e);
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                runOnUiThread(() -> {
-                    showLoading(false);
-
-                    if (response.isSuccessful() && response.body() != null) {
-                        try {
-                            String json = response.body().string();
-                            Log.d(TAG, "검색 API 응답 (" + keyword + "): " + json);
-                            parseVehicleData(json, keyword);
-                        } catch (IOException e) {
-                            Log.e(TAG, "검색 응답 파싱 실패: " + keyword, e);
-                            Toast.makeText(VehicleListActivity.this, "'" + keyword + "' 검색 데이터 파싱에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                            loadMockData(keyword);
-                        }
-                    } else {
-                        Log.w(TAG, "검색 API 응답 실패: " + response.code());
-                        Toast.makeText(VehicleListActivity.this, "'" + keyword + "' 검색 결과를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
-                        loadMockData(keyword); // 실패 시 목업 데이터 사용
-                    }
-                });
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    Log.d(TAG, "API 응답 성공: " + query);
+                    parseAPIResponse(responseBody);
+                } else {
+                    Log.e(TAG, "API 응답 실패: " + response.code() + " for " + query);
+                }
             }
         });
     }
 
-    // 커스텀 가격 설정 (원하는 대로 수정하세요!)
-    private void initCustomPrices() {
-        customPrices = new HashMap<>();
-
-        // === 차량 코드별 가격 설정 (원 단위) ===
-
-        // 현대차 전기차
-        customPrices.put("NE05", 57500);    // 아이오닉 5 N
-        customPrices.put("NE", 45000);      // 아이오닉 5
-        customPrices.put("NF", 38000);      // 아이오닉 6
-        customPrices.put("NU", 42000);      // 아이오닉 7
-
-        // 현대차 일반 승용차
-        customPrices.put("CN", 25000);      // 아반떼
-        customPrices.put("DN", 35000);      // 쏘나타
-        customPrices.put("LF", 28000);      // 그랜저
-        customPrices.put("AD", 22000);      // 엑센트
-
-        // 현대차 SUV
-        customPrices.put("TL", 38000);      // 투싼
-        customPrices.put("SM", 75500);      // 산타페
-        customPrices.put("OS", 65000);      // 베뉴
-
-        // 제네시스
-        customPrices.put("GN", 125500);     // 제네시스 G90
-        customPrices.put("DH", 95000);      // 제네시스 G80
-        customPrices.put("IK", 85000);      // 제네시스 G70
-        customPrices.put("JW", 110000);     // 제네시스 GV80
-        customPrices.put("JX", 95000);      // 제네시스 GV70
-
-        // 수입차/스포츠카 (예시)
-        customPrices.put("FERRARI", 125500); // 페라리
-        customPrices.put("LAMBORGHINI", 150000); // 람보르기니
-        customPrices.put("PORSCHE", 95000);   // 포르쉐
-        customPrices.put("BMW", 85000);       // BMW
-        customPrices.put("BENZ", 90000);      // 벤츠
-        customPrices.put("AUDI", 80000);      // 아우디
-        customPrices.put("DODGE", 75500);     // 닷지
-
-        // 기본 가격 (매칭되지 않는 경우)
-        customPrices.put("DEFAULT", 50000);
-    }
-
-    private void setupRecyclerView() {
-        vehicleAdapter = new VehicleAdapter(vehicleList, this::onVehicleSelected);
-        vehicleRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vehicleRecyclerView.setAdapter(vehicleAdapter);
-    }
-
-    // 현대자동차 API 호출
-    private void loadVehicleData() {
-        showLoading(true);
-
-        String url = "https://www.hyundai.com/kr/ko/e/api/search/search/search?query=아이오닉&collection=EP_TOTAL_ALL&sort=RANK&viewCount=10&pageNum=1";
-
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                .addHeader("Accept", "application/json")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e(TAG, "API 호출 실패", e);
-                runOnUiThread(() -> {
-                    showLoading(false);
-                    Toast.makeText(VehicleListActivity.this, "차량 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show();
-                    loadMockData(); // 실패 시 목업 데이터 사용
-                });
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                runOnUiThread(() -> {
-                    showLoading(false);
-
-                    if (response.isSuccessful() && response.body() != null) {
-                        try {
-                            String json = response.body().string();
-                            Log.d(TAG, "API 응답: " + json);
-                            parseVehicleData(json, "아이오닉"); // 기본 키워드 추가
-                        } catch (IOException e) {
-                            Log.e(TAG, "응답 파싱 실패", e);
-                            Toast.makeText(VehicleListActivity.this, "데이터 파싱에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                            loadMockData();
-                        }
-                    } else {
-                        Toast.makeText(VehicleListActivity.this, "데이터를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
-                        loadMockData(); // 실패 시 목업 데이터 사용
-                    }
-                });
-            }
-        });
-    }
-
-    // JSON 응답 파싱
-    private void parseVehicleData(String json, String keyword) {
+    // API 응답 파싱
+    private void parseAPIResponse(String response) {
         try {
-            JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+            JsonObject jsonResponse = JsonParser.parseString(response).getAsJsonObject();
+            JsonObject data = jsonResponse.getAsJsonObject("data");
+            JsonArray collections = data.getAsJsonArray("collections");
 
-            if (jsonObject.has("searchResultList")) {
-                JsonArray searchResults = jsonObject.getAsJsonArray("searchResultList");
+            List<Car> newCars = new ArrayList<>();
 
-                for (int i = 0; i < searchResults.size(); i++) {
-                    JsonObject searchResult = searchResults.get(i).getAsJsonObject();
+            for (JsonElement collectionElement : collections) {
+                JsonObject collection = collectionElement.getAsJsonObject();
+                JsonArray documents = collection.getAsJsonArray("document");
 
-                    if (searchResult.has("document")) {
-                        JsonArray documents = searchResult.getAsJsonArray("document");
+                for (JsonElement docElement : documents) {
+                    JsonObject doc = docElement.getAsJsonObject();
 
-                        for (int j = 0; j < documents.size(); j++) {
-                            JsonObject doc = documents.get(j).getAsJsonObject();
-                            Vehicle vehicle = parseVehicleFromDocument(doc);
-
-                            if (vehicle != null) {
-                                vehicleList.add(vehicle);
-                            }
+                    // 차량 데이터인지 확인
+                    String carName = getStringFromJson(doc, "REPN_CARN", "");
+                    if (!carName.isEmpty() && !carName.equals("null")) {
+                        Car car = parseCarFromDocument(doc);
+                        if (car != null) {
+                            newCars.add(car);
                         }
                     }
                 }
             }
 
-            if (vehicleList.isEmpty()) {
-                loadMockData(keyword); // API 데이터가 없으면 목업 데이터 사용
-                Toast.makeText(this, "'" + keyword + "' 검색 결과가 없어 샘플 데이터를 표시합니다.", Toast.LENGTH_SHORT).show();
-            } else {
-                vehicleAdapter.notifyDataSetChanged();
-                Toast.makeText(this, "'" + keyword + "' 검색 완료: " + vehicleList.size() + "대 발견", Toast.LENGTH_SHORT).show();
-            }
+            // UI 업데이트 (메인 스레드)
+            runOnUiThread(() -> {
+                // 첫 번째 API 응답이면 로딩 차량들 제거
+                if (carList.size() > 0 && carList.get(0).getName().contains("로딩")) {
+                    carList.clear();
+                }
+
+                for (Car car : newCars) {
+                    // 중복 확인 후 추가
+                    if (!isCarAlreadyExists(car.getName())) {
+                        carList.add(car);
+                    }
+                }
+                vehicleAdapter.notifyDataSetChanged(); // ★ vehicleAdapter 사용
+                Log.d(TAG, "차량 목록 업데이트: 총 " + carList.size() + "개");
+            });
 
         } catch (Exception e) {
-            Log.e(TAG, "JSON 파싱 실패", e);
-            loadMockData(keyword); // 파싱 실패 시 목업 데이터 사용
+            Log.e(TAG, "API 응답 파싱 실패", e);
         }
     }
 
-    // Document에서 Vehicle 객체 생성
-    private Vehicle parseVehicleFromDocument(JsonObject doc) {
+    // Document에서 Car 객체 생성
+    private Car parseCarFromDocument(JsonObject doc) {
         try {
             String carName = getStringFromJson(doc, "REPN_CARN", "차량명 없음");
-            String carCode = getStringFromJson(doc, "REPN_CARN_CD", "DEFAULT");
-            String engineType = getStringFromJson(doc, "ENG_TP", "정보없음");
+            String carCode = getStringFromJson(doc, "REPN_CARN_CD", "");
+            String engineType = getStringFromJson(doc, "ENG_TP", "");
             String minRange = getStringFromJson(doc, "MIN_ROF_SBC", "");
             String maxRange = getStringFromJson(doc, "MAX_ROF_SBC", "");
             String imagePath = getStringFromJson(doc, "URL_ADR_SBC", "");
-
-            // 실제 가격 정보 (API에서 가져온 값)
             String minPrice = getStringFromJson(doc, "MIN_PCE_AMT", "");
-            String maxPrice = getStringFromJson(doc, "MAX_PCE_AMT", "");
-
-            // 디버깅 로그 추가
-            Log.d(TAG, "=== 차량 파싱 시작 ===");
-            Log.d(TAG, "차량명: " + carName);
-            Log.d(TAG, "원본 이미지 경로: '" + imagePath + "'");
-            Log.d(TAG, "이미지 경로 길이: " + imagePath.length());
-            Log.d(TAG, "이미지 경로가 비어있나? " + imagePath.isEmpty());
 
             // HTML 태그 제거
-            carName = carName.replaceAll("<[^>]*>", "");
+            carName = carName.replaceAll("<[^>]*>", "").trim();
 
-            // 이미지 URL 구성 - 강제로 기본 이미지 사용
-            String fullImageUrl = "";
-            if (!imagePath.isEmpty() && imagePath.trim().length() > 0) {
-                fullImageUrl = "https://www.hyundai.com" + imagePath;
-                Log.d(TAG, "API 이미지 URL 생성: " + fullImageUrl);
-            } else {
-                Log.w(TAG, "❌ API에서 이미지 경로 없음, 기본 이미지 사용: " + carName);
-                fullImageUrl = getDefaultImageUrl(carCode, carName);
-                Log.d(TAG, "기본 이미지 URL: " + fullImageUrl);
+            // 엔진 타입 추정
+            if (engineType.isEmpty()) {
+                if (carName.toLowerCase().contains("일렉트릭") || carName.toLowerCase().contains("전기")) {
+                    engineType = "전기";
+                } else if (carName.toLowerCase().contains("하이브리드")) {
+                    engineType = "하이브리드";
+                } else {
+                    engineType = "가솔린";
+                }
             }
 
-            // 연비 정보 구성
+            // 이미지 URL 생성
+            String fullImageUrl = "";
+            if (!imagePath.isEmpty()) {
+                fullImageUrl = "https://www.hyundai.com" + imagePath;
+            } else {
+                fullImageUrl = "https://picsum.photos/400/250?random=" + Math.abs(carName.hashCode() % 100);
+            }
+
+            // 연비 정보
             String fuelEfficiency = "";
-            if (!minRange.isEmpty() && !maxRange.isEmpty()) {
-                if (minRange.equals(maxRange)) {
-                    fuelEfficiency = minRange + "km/l";
-                } else {
-                    fuelEfficiency = minRange + "~" + maxRange + "km/l";
-                }
-            } else if (!minRange.isEmpty()) {
-                fuelEfficiency = minRange + "km/l";
+            if (!maxRange.isEmpty() && !maxRange.equals("0")) {
+                fuelEfficiency = maxRange + "km/l";
             } else {
                 fuelEfficiency = "연비 정보 없음";
             }
 
-            // 가격 정보 구성 (API 가격 우선, 없으면 커스텀 가격)
+            // 가격 정보 (시간당 렌탈료로 변환)
             String priceText = "";
-            if (!minPrice.isEmpty()) {
+            if (!minPrice.isEmpty() && !minPrice.equals("0")) {
                 try {
                     long price = Long.parseLong(minPrice);
-                    priceText = String.format("%,d원", price);
-                    Log.d(TAG, "API 가격 사용: " + priceText);
+                    // 구매가의 0.1%를 시간당 렌탈료로 계산 (예시)
+                    long hourlyRate = price / 1000;
+                    priceText = String.format("₩%,d / 1시간", hourlyRate);
                 } catch (NumberFormatException e) {
-                    Log.w(TAG, "가격 파싱 실패, 커스텀 가격 사용");
+                    priceText = getDefaultPrice(carName);
                 }
+            } else {
+                priceText = getDefaultPrice(carName);
             }
 
-            // API에서 가격을 가져오지 못했으면 커스텀 가격 사용
-            if (priceText.isEmpty()) {
-                Integer customPrice = customPrices.get(carCode);
-                if (customPrice == null) {
-                    customPrice = customPrices.get("DEFAULT");
-                }
-                priceText = String.format("%,d원", customPrice);
-                Log.d(TAG, "커스텀 가격 사용: " + priceText);
-            }
+            Log.d(TAG, "차량 파싱 성공: " + carName + " - " + priceText);
 
-            Log.d(TAG, "최종 이미지 URL: '" + fullImageUrl + "'");
-            Log.d(TAG, "=== 차량 파싱 완료 ===");
-
-            return new Vehicle(
-                    carName,
-                    priceText,
-                    fuelEfficiency,
-                    engineType,
-                    fullImageUrl,
-                    carCode
-            );
+            return new Car(carName, priceText, fullImageUrl, engineType, fuelEfficiency, carCode);
 
         } catch (Exception e) {
-            Log.e(TAG, "Vehicle 파싱 실패", e);
+            Log.e(TAG, "차량 파싱 실패", e);
             return null;
         }
     }
 
-    // 기본 이미지 URL 제공 (API에서 이미지를 못 가져올 때)
-    private String getDefaultImageUrl(String carCode, String carName) {
-        // 확실한 테스트용 이미지 URL 반환
-        Log.d(TAG, "기본 이미지 URL 생성 for: " + carName);
-
-        if (carName.contains("아이오닉 5")) {
-            return "https://picsum.photos/400/250?random=1";
-        } else if (carName.contains("아이오닉 6")) {
-            return "https://picsum.photos/400/250?random=2";
-        } else if (carName.contains("G90")) {
-            return "https://picsum.photos/400/250?random=3";
-        } else if (carName.contains("GV80")) {
-            return "https://picsum.photos/400/250?random=4";
-        } else if (carName.contains("G80")) {
-            return "https://picsum.photos/400/250?random=5";
+    // 차량별 기본 가격 설정
+    private String getDefaultPrice(String carName) {
+        if (carName.contains("제네시스")) {
+            return "₩45,000 / 1시간";
+        } else if (carName.contains("아이오닉")) {
+            return "₩30,000 / 1시간";
         } else if (carName.contains("산타페")) {
-            return "https://picsum.photos/400/250?random=6";
-        } else if (carName.contains("투싼")) {
-            return "https://picsum.photos/400/250?random=7";
+            return "₩35,000 / 1시간";
+        } else if (carName.contains("캐스퍼")) {
+            return "₩15,000 / 1시간";
+        } else {
+            return "₩25,000 / 1시간";
         }
-
-        // 모든 경우에 대해 테스트 이미지 반환
-        String testUrl = "https://picsum.photos/400/250?random=" + Math.abs(carName.hashCode() % 100);
-        Log.d(TAG, "기본 테스트 이미지 URL: " + testUrl);
-        return testUrl;
     }
 
-    // JSON에서 안전하게 문자열 추출
+    // JSON에서 문자열 안전하게 추출
     private String getStringFromJson(JsonObject json, String key, String defaultValue) {
         try {
             if (json.has(key) && !json.get(key).isJsonNull()) {
                 return json.get(key).getAsString();
             }
         } catch (Exception e) {
-            Log.w(TAG, "JSON 키 추출 실패: " + key, e);
+            Log.w(TAG, "JSON 파싱 실패: " + key, e);
         }
         return defaultValue;
     }
 
-    // 목업 데이터 (API 실패 시 사용) - 오버로드된 메서드 추가
-    private void loadMockData() {
-        loadMockData("기본");
+    // 차량 중복 확인
+    private boolean isCarAlreadyExists(String carName) {
+        for (Car car : carList) {
+            if (car.getName().equals(carName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    // 목업 데이터 (API 실패 시 사용)
-    private void loadMockData(String keyword) {
-        vehicleList.clear();
+    // API 로딩 실패 시 기본 차량들
+    private void addFallbackCars() {
+        Log.d(TAG, "기본 차량 추가");
 
-        // 검색 키워드에 따른 샘플 데이터
-        if (keyword.contains("아이오닉") || keyword.toLowerCase().contains("ioniq")) {
-            vehicleList.add(new Vehicle(
-                    "아이오닉 5 N",
-                    "57,500원",
-                    "3.7km/l",
-                    "전기",
-                    "",
-                    "NE05"
-            ));
+        carList.clear();
 
-            vehicleList.add(new Vehicle(
-                    "아이오닉 5",
-                    "45,000원",
-                    "5.1km/l",
-                    "전기",
-                    "",
-                    "NE"
-            ));
+        // ★ 더 많은 현대차 모델들 추가
+        // 인기 세단/해치백
+        carList.add(new Car("현대 아반떼", "₩20,000 / 1시간", R.drawable.sample_car, "", "가솔린", "14.2km/l", "AVANTE"));
+        carList.add(new Car("현대 쏘나타", "₩25,000 / 1시간", R.drawable.sample_car, "", "가솔린", "13.8km/l", "SONATA"));
+        carList.add(new Car("현대 그랜저", "₩35,000 / 1시간", R.drawable.sample_car, "", "가솔린", "11.5km/l", "GRANDEUR"));
 
-            vehicleList.add(new Vehicle(
-                    "아이오닉 6",
-                    "38,000원",
-                    "6.2km/l",
-                    "전기",
-                    "",
-                    "NF"
-            ));
+        // SUV 라인업
+        carList.add(new Car("현대 산타페", "₩30,000 / 1시간", R.drawable.sample_car, "", "가솔린", "12.1km/l", "SANTAFE"));
+        carList.add(new Car("현대 투싼", "₩28,000 / 1시간", R.drawable.sample_car, "", "가솔린", "13.0km/l", "TUCSON"));
+        carList.add(new Car("현대 팰리세이드", "₩45,000 / 1시간", R.drawable.sample_car, "", "가솔린", "10.2km/l", "PALISADE"));
+        carList.add(new Car("현대 코나", "₩22,000 / 1시간", R.drawable.sample_car, "", "가솔린", "14.5km/l", "KONA"));
+        carList.add(new Car("현대 베뉴", "₩18,000 / 1시간", R.drawable.sample_car, "", "가솔린", "15.2km/l", "VENUE"));
 
-        } else if (keyword.contains("제네시스") || keyword.toLowerCase().contains("genesis")) {
-            vehicleList.add(new Vehicle(
-                    "제네시스 G90",
-                    "125,500원",
-                    "8.5km/l",
-                    "가솔린",
-                    "",
-                    "GN"
-            ));
+        // 전기차 라인업
+        carList.add(new Car("현대 아이오닉 5", "₩35,000 / 1시간", R.drawable.sample_car, "", "전기", "305km", "IONIQ5"));
+        carList.add(new Car("현대 아이오닉 6", "₩40,000 / 1시간", R.drawable.sample_car, "", "전기", "429km", "IONIQ6"));
+        carList.add(new Car("현대 코나 일렉트릭", "₩30,000 / 1시간", R.drawable.sample_car, "", "전기", "259km", "KONA_EV"));
 
-            vehicleList.add(new Vehicle(
-                    "제네시스 GV80",
-                    "110,000원",
-                    "9.2km/l",
-                    "가솔린",
-                    "",
-                    "JW"
-            ));
+        // 소형차/경차
+        carList.add(new Car("현대 캐스퍼", "₩15,000 / 1시간", R.drawable.sample_car, "", "가솔린", "17.3km/l", "CASPER"));
+        carList.add(new Car("현대 벨로스터", "₩25,000 / 1시간", R.drawable.vel, "", "가솔린", "12.8km/l", "VELOSTER"));
 
-            vehicleList.add(new Vehicle(
-                    "제네시스 G80",
-                    "95,000원",
-                    "9.8km/l",
-                    "가솔린",
-                    "",
-                    "DH"
-            ));
+        // 제네시스 라인업
+        carList.add(new Car("제네시스 G90", "₩60,000 / 1시간", R.drawable.g90, "", "가솔린", "9.1km/l", "G90"));
+        carList.add(new Car("제네시스 GV70", "₩50,000 / 1시간", R.drawable.gv70, "", "가솔린", "10.5km/l", "GV70"));
+        carList.add(new Car("제네시스 G80", "₩55,000 / 1시간", R.drawable.g80, "", "가솔린", "10.2km/l", "G80"));
 
-        } else if (keyword.contains("산타페") || keyword.toLowerCase().contains("santafe")) {
-            vehicleList.add(new Vehicle(
-                    "산타페",
-                    "75,500원",
-                    "11.8km/l",
-                    "가솔린",
-                    "",
-                    "SM"
-            ));
+        // 상용차
+        carList.add(new Car("현대 스타리아", "₩40,000 / 1시간", R.drawable.sample_car, "", "디젤", "11.3km/l", "STARIA"));
+        carList.add(new Car("현대 포터", "₩25,000 / 1시간", R.drawable.sample_car, "", "디젤", "12.5km/l", "PORTER"));
 
-        } else if (keyword.contains("투싼") || keyword.toLowerCase().contains("tucson")) {
-            vehicleList.add(new Vehicle(
-                    "투싼",
-                    "38,000원",
-                    "13.2km/l",
-                    "가솔린",
-                    "",
-                    "TL"
-            ));
+        vehicleAdapter.notifyDataSetChanged(); // ★ vehicleAdapter 사용
 
-        } else if (keyword.contains("쏘나타") || keyword.toLowerCase().contains("sonata")) {
-            vehicleList.add(new Vehicle(
-                    "쏘나타",
-                    "35,000원",
-                    "12.4km/l",
-                    "가솔린",
-                    "",
-                    "DN"
-            ));
+        // ★ 모든 차량의 실제 이미지로 교체
+        updateAllCarsWithRealImages();
+    }
 
-        } else if (keyword.contains("아반떼") || keyword.toLowerCase().contains("avante")) {
-            vehicleList.add(new Vehicle(
-                    "아반떼",
-                    "25,000원",
-                    "14.2km/l",
-                    "가솔린",
-                    "",
-                    "CN"
-            ));
+    // ★ 모든 차량의 이미지를 업데이트하는 새로운 메서드
+    private void updateAllCarsWithRealImages() {
+        Log.d(TAG, "실제 이미지 업데이트 시작");
+        updateCarImageSequentially(0);
+    }
 
-        } else if (keyword.contains("그랜저") || keyword.toLowerCase().contains("grandeur")) {
-            vehicleList.add(new Vehicle(
-                    "그랜저",
-                    "28,000원",
-                    "11.6km/l",
-                    "가솔린",
-                    "",
-                    "LF"
-            ));
-
-        } else if (keyword.contains("팰리세이드") || keyword.toLowerCase().contains("palisade")) {
-            vehicleList.add(new Vehicle(
-                    "팰리세이드",
-                    "42,000원",
-                    "10.2km/l",
-                    "가솔린",
-                    "",
-                    "NU"
-            ));
-
-        } else if (keyword.contains("전기") || keyword.toLowerCase().contains("electric") || keyword.toLowerCase().contains("ev")) {
-            vehicleList.add(new Vehicle(
-                    "아이오닉 5",
-                    "45,000원",
-                    "5.1km/l",
-                    "전기",
-                    "",
-                    "NE"
-            ));
-
-            vehicleList.add(new Vehicle(
-                    "아이오닉 6",
-                    "38,000원",
-                    "6.2km/l",
-                    "전기",
-                    "",
-                    "NF"
-            ));
-
-        } else if (keyword.contains("SUV") || keyword.toLowerCase().contains("suv")) {
-            vehicleList.add(new Vehicle(
-                    "산타페",
-                    "75,500원",
-                    "11.8km/l",
-                    "가솔린",
-                    "",
-                    "SM"
-            ));
-
-            vehicleList.add(new Vehicle(
-                    "투싼",
-                    "38,000원",
-                    "13.2km/l",
-                    "가솔린",
-                    "",
-                    "TL"
-            ));
-
-            vehicleList.add(new Vehicle(
-                    "팰리세이드",
-                    "42,000원",
-                    "10.2km/l",
-                    "가솔린",
-                    "",
-                    "NU"
-            ));
-
-        } else {
-            // 기본 샘플 데이터 (검색어가 매칭되지 않는 경우)
-            vehicleList.add(new Vehicle(
-                    "아이오닉 5 N",
-                    "57,500원",
-                    "3.7km/l",
-                    "전기",
-                    "",
-                    "NE05"
-            ));
-
-            vehicleList.add(new Vehicle(
-                    "제네시스 G90",
-                    "125,500원",
-                    "8.5km/l",
-                    "가솔린",
-                    "",
-                    "GN"
-            ));
-
-            vehicleList.add(new Vehicle(
-                    "산타페",
-                    "75,500원",
-                    "11.8km/l",
-                    "가솔린",
-                    "",
-                    "SM"
-            ));
+    private void updateCarImageSequentially(int currentIndex) {
+        if (currentIndex >= carList.size()) {
+            Log.d(TAG, "모든 차량 이미지 업데이트 완료");
+            return;
         }
 
-        vehicleAdapter.notifyDataSetChanged();
+        Car car = carList.get(currentIndex);
 
-        if (vehicleList.isEmpty()) {
-            Toast.makeText(this, "'" + keyword + "' 검색 결과가 없습니다.", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "'" + keyword + "' 검색 완료: " + vehicleList.size() + "대 발견", Toast.LENGTH_SHORT).show();
+        // ★ 제네시스와 벨로스터는 이미 로컬 이미지를 사용하므로 스킵
+        if (car.getName().contains("제네시스") || car.getName().contains("벨로스터")) {
+            Log.d(TAG, "로컬 이미지 사용하는 차량 스킵: " + car.getName());
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                updateCarImageSequentially(currentIndex + 1);
+            }, 100);
+            return;
+        }
+
+        String searchKeyword = getOptimizedKeyword(car.getName());
+        Log.d("SEARCH_KEYWORD", "검색할 키워드: " + car.getName() + " -> " + searchKeyword);
+
+        Log.d(TAG, "이미지 업데이트 중: " + car.getName() + " (인덱스: " + currentIndex + ")");
+
+        String url = "https://www.hyundai.com/kr/ko/e/api/search/search/search?query=" + searchKeyword + "&collection=EP_TOTAL_ALL&sort=RANK&viewCount=10&pageNum=1";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                .addHeader("Accept", "application/json")
+                .build();
+
+        // ★ 각 요청마다 새로운 클라이언트 생성 (충돌 방지)
+        OkHttpClient sequentialClient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
+
+        sequentialClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e(TAG, "이미지 API 호출 실패: " + car.getName(), e);
+
+                // ★ 실패해도 다음 차량 계속 처리 (500ms 후)
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    updateCarImageSequentially(currentIndex + 1);
+                }, 500);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                try {
+                    String body = response.body().string();
+                    Log.d("API_RESPONSE", "응답 성공: " + car.getName());
+
+                    JsonObject jsonObject = new Gson().fromJson(body, JsonObject.class);
+                    JsonArray collections = jsonObject.getAsJsonObject("data").getAsJsonArray("collections");
+
+                    if (collections.size() > 0) {
+                        JsonObject collection = collections.get(0).getAsJsonObject();
+                        JsonArray documents = collection.get("document").getAsJsonArray();
+
+                        if (documents.size() > 0) {
+                            JsonObject document = documents.get(0).getAsJsonObject();
+                            JsonElement element = document.get("URL_ADR_SBC");
+
+                            if (element != null && !element.isJsonNull()) {
+                                String imageUrl = "https://www.hyundai.com" + element.getAsString();
+                                Log.d("IMAGE_URL", car.getName() + " -> " + imageUrl);
+
+                                runOnUiThread(() -> {
+                                    try {
+                                        if (currentIndex < carList.size()) {
+                                            Car targetCar = carList.get(currentIndex);
+                                            if (targetCar != null) {
+                                                // ★ 이미지 URL 업데이트
+                                                targetCar.setImageUrl(imageUrl);
+                                                vehicleAdapter.notifyItemChanged(currentIndex); // ★ vehicleAdapter 사용
+                                                Log.d(TAG, "✅ 이미지 업데이트 성공: " + targetCar.getName());
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "이미지 URL 업데이트 실패", e);
+                                    }
+
+                                    // ★ 다음 차량 처리 (300ms 후, UI 업데이트 안정화)
+                                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                        updateCarImageSequentially(currentIndex + 1);
+                                    }, 300);
+                                });
+                            } else {
+                                Log.w(TAG, "URL_ADR_SBC가 null: " + car.getName());
+                                // ★ 다음 차량 계속 처리
+                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                    updateCarImageSequentially(currentIndex + 1);
+                                }, 300);
+                            }
+                        } else {
+                            Log.w(TAG, "documents 배열이 비어있음: " + car.getName());
+                            // ★ 다음 차량 계속 처리
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                updateCarImageSequentially(currentIndex + 1);
+                            }, 300);
+                        }
+                    } else {
+                        Log.w(TAG, "collections 배열이 비어있음: " + car.getName());
+                        // ★ 다음 차량 계속 처리
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            updateCarImageSequentially(currentIndex + 1);
+                        }, 300);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "이미지 API 처리 실패: " + car.getName(), e);
+                    // ★ 다음 차량 계속 처리
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        updateCarImageSequentially(currentIndex + 1);
+                    }, 300);
+                }
+            }
+        });
+    }
+
+    // ★ 검색 키워드 최적화 메서드
+    private String getOptimizedKeyword(String carName) {
+        // ★ 직접 매핑으로 확실하게 (수정된 버전)
+        switch (carName) {
+            case "현대 아반떼": return "아반떼";
+            case "현대 쏘나타": return "쏘나타";
+            case "현대 그랜저": return "그랜저";
+            case "현대 산타페": return "산타페";
+            case "현대 투싼": return "투싼";
+            case "현대 팰리세이드": return "팰리세이드";
+            case "현대 코나": return "코나";
+            case "현대 베뉴": return "베뉴";
+            case "현대 아이오닉 5": return "아이오닉5";
+            case "현대 아이오닉 6": return "아이오닉6";
+            case "현대 코나 일렉트릭": return "코나";
+            case "현대 캐스퍼": return "캐스퍼";
+            case "현대 스타리아": return "스타리아";
+            case "현대 포터": return "포터";
+            default:
+                String keyword = carName.replace("현대 ", "").replace("제네시스 ", "");
+                Log.d("SEARCH_KEYWORD", carName + " -> " + keyword);
+                return keyword;
         }
     }
 
-    // 차량 선택 시 호출 (두 가지 방식 지원)
-    private void onVehicleSelected(Vehicle vehicle) {
-        selectedVehicle = vehicle; // 선택된 차량 저장
+    // ★ 차량 선택 시 호출되는 메서드 (onVehicleSelected로 변경)
+    private void onVehicleSelected(Car car) {
+        selectedCar = car; // 선택된 차량 저장
         updateSelectButton(); // 버튼 상태 업데이트
 
-        Toast.makeText(this, vehicle.getName() + " 선택됨", Toast.LENGTH_SHORT).show();
-
-        // 즉시 결과 반환하는 경우 (기존 방식)
-        // Intent resultIntent = new Intent();
-        // resultIntent.putExtra("selected_vehicle", vehicle);
-        // setResult(RESULT_OK, resultIntent);
-        // finish();
-    }
-
-    private void showLoading(boolean show) {
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-        vehicleRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+        Log.d(TAG, "차량 선택됨: " + car.getName());
+        Toast.makeText(this, car.getName() + " 선택됨", Toast.LENGTH_SHORT).show();
     }
 }
