@@ -56,7 +56,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.signupActivity"/>
+        <activity android:name=".activity.LicenseRegistrationActivity"/>
         <activity android:name=".activity.UsageHistoryActivity"/>
+        <activity android:name=".activity.LicenseListActivity"/>
+
+
 
     </application>
     <!-- HTTP 트래픽 허용 (Android 9+ 대응) -->

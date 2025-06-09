@@ -121,16 +121,6 @@
         </LinearLayout>
 
         <!-- 구매 버튼 -->
-        <Button
-            android:id="@+id/purchase_button"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="예약하기"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="#007BFF"
-            android:layout_marginBottom="16dp" />
 
         <!-- 주요 특징 (선택사항) -->
         <LinearLayout

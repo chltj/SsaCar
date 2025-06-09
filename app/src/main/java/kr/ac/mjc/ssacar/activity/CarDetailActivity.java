@@ -141,7 +141,6 @@ public class CarDetailActivity extends AppCompatActivity {
             carPriceText = findViewById(R.id.car_detail_price);
             carEngineTypeText = findViewById(R.id.car_detail_engine_type);
             carEfficiencyText = findViewById(R.id.car_detail_efficiency);
-            purchaseButton = findViewById(R.id.purchase_button);
             backButton = findViewById(R.id.back_button);
 
             // car_features_text는 없을 수도 있으므로 예외 처리

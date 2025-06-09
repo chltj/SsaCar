@@ -38,6 +38,8 @@ import android.os.Looper;
 import java.util.concurrent.TimeUnit;
 
 
+
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView carNameText;
     private TextView carPriceText;
     private String imageUrl;
+
 
 
     @Override
@@ -120,17 +123,25 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "버튼 설정 완료");
     }
 
+
+
     public void goToHistory(View view) {
         // 예시: 다른 화면으로 이동
         Intent intent = new Intent(this, UsageHistoryActivity.class);
         startActivity(intent);
 
     }
+
     public void goToSmartkey(View view) {
         // 원하는 동작 수행
         Intent intent = new Intent(this, SamrtKeyActivity.class);
         startActivity(intent);
     }
+    public void goTodrive(View view) {
+        Intent intent = new Intent(MainActivity.this, LicenseListActivity.class);
+        startActivity(intent);
+    }
+
     private void setupIconListeners() {
         notificationIcon.setOnClickListener(new View.OnClickListener() {
             @Override

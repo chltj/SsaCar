@@ -1,14 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/text_license_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="내 크레딧 화면"
-        android:textSize="24sp"
-        android:textStyle="bold"/>
+        android:text="등록된 면허 정보가 표시됩니다"
+        android:textSize="18sp" />
 </LinearLayout>

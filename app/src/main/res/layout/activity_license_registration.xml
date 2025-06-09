@@ -1,0 +1,73 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="운전면허 등록"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- 면허 번호 -->
+        <EditText
+            android:id="@+id/edit_license_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="면허 번호 (예: 12-34-567890-12)"
+            android:inputType="text"/>
+
+        <!-- 발급일자 -->
+        <EditText
+            android:id="@+id/edit_issue_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="발급일자 (예: 2020-01-01)"
+            android:inputType="date"
+            android:layout_marginTop="12dp"/>
+
+        <!-- 면허 종류 -->
+        <EditText
+            android:id="@+id/edit_license_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="면허 종류 (예: 1종 보통, 2종 소형)"
+            android:inputType="text"
+            android:layout_marginTop="12dp"/>
+
+        <!-- 발급 기관 -->
+        <EditText
+            android:id="@+id/edit_issued_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="발급 기관 (예: 서울운전면허시험장)"
+            android:inputType="text"
+            android:layout_marginTop="12dp"/>
+
+        <!-- 유효기간 -->
+        <EditText
+            android:id="@+id/edit_expiration_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="유효기간 (예: 2030-12-31)"
+            android:inputType="date"
+            android:layout_marginTop="12dp"/>
+
+        <!-- 등록 완료 버튼 -->
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="등록 완료"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#FF7F8187"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+</ScrollView>

@@ -118,53 +118,26 @@
         android:layout_height="match_parent"
         android:padding="8dp"
         android:layout_marginTop="8dp" />
+
+
     <LinearLayout
         android:id="@+id/bottomMenu"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:background="#F7F7FA"
         android:padding="16dp"
-        android:gravity="center"
-        android:layout_margin="16dp"
+        android:layout_gravity="center"
         android:elevation="4dp"
-        android:layout_marginBottom="24dp"
-        android:backgroundTint="#F6F6FB"
-        android:clipToPadding="false"
-        android:clipChildren="false"
-        android:layout_marginTop="8dp">
-
-        <!-- 고객센터 -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:onClick="goToSmartkey"
-            tools:ignore="OnClick">
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_lock_close" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="스마트키"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
+        android:backgroundTint="#F6F6FB">
 
         <!-- 이용내역 -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
+            android:paddingHorizontal="24dp"
             android:onClick="goToHistory">
 
             <ImageView
@@ -180,15 +153,14 @@
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
-        <!-- 결제.면허 -->
+        <!-- 결제 -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:onClick="goToPayment"
-            tools:ignore="OnClick">
+            android:paddingHorizontal="24dp"
+            android:onClick="goToPayment">
 
             <ImageView
                 android:layout_width="36dp"
@@ -203,15 +175,14 @@
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
-        <!-- 내 크레딧 -->
+        <!-- 면허 -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:onClick="goTodrive"
-            tools:ignore="OnClick">
+            android:paddingHorizontal="24dp"
+            android:onClick="goTodrive">
 
             <ImageView
                 android:layout_width="36dp"
@@ -225,6 +196,7 @@
                 android:textSize="12sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
+
     </LinearLayout>
 
 

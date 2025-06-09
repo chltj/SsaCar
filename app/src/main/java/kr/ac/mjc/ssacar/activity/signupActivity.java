@@ -64,7 +64,7 @@ public class signupActivity extends AppCompatActivity {
             Toast.makeText(this, "회원가입이 완료되었습니다!", Toast.LENGTH_SHORT).show();
 
             // 로그인 화면으로 이동
-            Intent intent = new Intent(signupActivity.this, MyPageActivity.class);
+            Intent intent = new Intent(signupActivity.this, LicenseRegistrationActivity.class);
             startActivity(intent);
             finish();
         });
