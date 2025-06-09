@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.ac.mjc.ssacar.NotificationItem;
 import kr.ac.mjc.ssacar.PaymentCard;
 import kr.ac.mjc.ssacar.PaymentHistory;
 import kr.ac.mjc.ssacar.R;
@@ -54,6 +55,7 @@ public class PaymentActivity extends AppCompatActivity {
     String departureTime;
     String arrivalTime;
     private ImageView carImageView;
+    String usageType;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -67,6 +69,7 @@ public class PaymentActivity extends AppCompatActivity {
         setupListeners();
         loadVehicleData();
         calculatePrice();
+        usageType = getIntent().getStringExtra("usage_type");
     }
 
     private void initViews() {
@@ -140,6 +143,7 @@ public class PaymentActivity extends AppCompatActivity {
     private void loadVehicleData() {
         Intent intent = getIntent();
         selectedVehicle = intent.getParcelableExtra("selected_vehicle");
+
 
         placeName = intent.getStringExtra("place_name");
         address = intent.getStringExtra("address");
@@ -261,6 +265,30 @@ public class PaymentActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+
+        // 알림 데이터 저장
+        SharedPreferences nprefs = getSharedPreferences("notification_storage", MODE_PRIVATE);
+        String njson = nprefs.getString("notifications", null);
+        List<NotificationItem> notifications;
+
+        Type ntype = new TypeToken<List<NotificationItem>>() {}.getType();
+        Gson ngson = new Gson();
+
+        if (njson != null) {
+            notifications = ngson.fromJson(njson, ntype);
+        } else {
+            notifications = new ArrayList<>();
+        }
+
+        NotificationItem item = new NotificationItem(
+                "SSACAR 결제 완료",
+                spinnerCard.getSelectedItem().toString() + "로 " + String.format("%,d원", totalPrice) + " 결제가 완료되었습니다!",
+                System.currentTimeMillis()
+        );
+
+        notifications.add(0, item);
+        nprefs.edit().putString("notifications", ngson.toJson(notifications)).apply();
+
     }
 
 
