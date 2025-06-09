@@ -39,7 +39,7 @@ public class UsageHistoryActivity extends AppCompatActivity {
         adapter = new UsageHistoryAdapter(historyList, this);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(item -> {
-            Intent intent = new Intent(UsageHistoryActivity.this, SamrtKeyActivity.class);
+            Intent intent = new Intent(UsageHistoryActivity.this, SmartKeyActivity.class);
             intent.putExtra("carName", item.getCarName());
             intent.putExtra("engineType", item.getEngineType());
             intent.putExtra("placeName", item.getPlaceName());

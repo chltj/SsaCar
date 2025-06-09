@@ -44,7 +44,7 @@
         <activity android:name=".activity.OnewayActivity" />
         <activity android:name=".activity.LongtermActivity" />
         <activity android:name=".activity.CarDetailActivity" />
-        <activity android:name=".activity.SamrtKeyActivity"/>
+        <activity android:name=".activity.SmartKeyActivity"/>
         <activity android:name=".activity.PaymentLicenseActivity"/>
         <activity android:name=".activity.CreditActivity"/>
         <activity android:name=".activity.VehicleListActivity" android:exported="false"/>

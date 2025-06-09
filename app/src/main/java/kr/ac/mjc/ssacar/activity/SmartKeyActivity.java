@@ -1,51 +1,66 @@
 package kr.ac.mjc.ssacar.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-
 import kr.ac.mjc.ssacar.R;
 
-public class SmartKeyActivity extends AppCompatActivity {
+import android.widget.TextView;
 
+public class SmartKeyActivity extends AppCompatActivity {
+    private ImageView btnUnlock, btnLock, btnCustomer, btnHazard, btnHorn, btnExtend, btnReturnNow, btnBack;
+
+    private TextView tvCarName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_smart_key);
+        setContentView(R.layout.activity_smart_key);  // XML 파일명에 맞게 설정
 
-        // 인텐트에서 데이터 받기
-        Intent intent = getIntent();
-        String carName = intent.getStringExtra("carName");
-        String carImageUrl = intent.getStringExtra("carImageUrl");
-        String startTime = intent.getStringExtra("startTime");
-        String endTime = intent.getStringExtra("endTime");
-        String pickupLocation = intent.getStringExtra("pickupLocation");
-        String returnLocation = intent.getStringExtra("returnLocation");
+        initViews();
+        setupListeners();
+        String carName = getIntent().getStringExtra("carName");
+        String engineType = getIntent().getStringExtra("engineType");
+        String placeName = getIntent().getStringExtra("placeName");
+        String address = getIntent().getStringExtra("address");
+        String departureTime = getIntent().getStringExtra("departureTime");
+        String arrivalTime = getIntent().getStringExtra("arrivalTime");
+        String imageUrl = getIntent().getStringExtra("imageUrl");
 
-        // 차량 이름 및 시간 표시할 TextView (실제 XML ID 사용)
-        TextView carNameTv = findViewById(R.id.text_car_name);   // 예: 차량 이름 TextView
-        TextView timeTv = findViewById(R.id.text_time);          // 예: 시간 정보 TextView
+        Toast.makeText(this, carName + " 스마트키 화면", Toast.LENGTH_SHORT).show();
 
-        if (carName != null) {
-            carNameTv.setText(carName);
+        if (carName != null && !carName.isEmpty()) {
+            tvCarName.setText(carName + " 스마트키");
         }
+    }
+    private void initViews() {
+        btnUnlock = findViewById(R.id.btn_unlock);
+        btnLock = findViewById(R.id.btn_lock);
+        btnCustomer = findViewById(R.id.btn_customer);
+        btnHazard = findViewById(R.id.btn_hazard);
+        btnHorn = findViewById(R.id.btn_horn);
+        btnExtend = findViewById(R.id.btn_extend);
+        btnReturnNow = findViewById(R.id.btn_return_now);
+        btnBack = findViewById(R.id.back_button);
+        tvCarName = findViewById(R.id.tv_car_name);
+    }
 
-        if (startTime != null && endTime != null) {
-            timeTv.setText("출발: " + startTime + "\n반납: " + endTime);
-        }
+    private void setupListeners() {
+        btnUnlock.setOnClickListener(v -> showToast("문이 열렸습니다."));
+        btnLock.setOnClickListener(v -> showToast("문이 닫혔습니다."));
+        btnCustomer.setOnClickListener(v -> showToast("고객센터 연결 중..."));
+        btnHazard.setOnClickListener(v -> showToast("비상등이 켜졌습니다."));
+        btnHorn.setOnClickListener(v -> showToast("경적을 울립니다."));
+        btnExtend.setOnClickListener(v -> showToast("반납 시간이 연장되었습니다."));
+        btnReturnNow.setOnClickListener(v -> showToast("차량을 즉시 반납합니다."));
+        btnBack.setOnClickListener(v -> finish());
 
-        // 차량 이미지 표시 (Glide 사용)
-        ImageView imageCar = findViewById(R.id.image_car); // 예: 이미지뷰 ID
-        if (carImageUrl != null) {
-            Glide.with(this)
-                    .load(carImageUrl)
-                    .placeholder(R.drawable.placeholder) // 기본 이미지 설정
-                    .into(imageCar);
-        }
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
