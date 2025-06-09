@@ -67,6 +67,7 @@ public class PickUpActivity extends AppCompatActivity implements OnMapReadyCallb
 
 
 
+
         KeywordEt = findViewById(R.id.keyword_et);
         KeywordEt.setOnKeyListener(this);
 
