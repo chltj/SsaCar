@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -156,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToSmartkey(View view) {
         if (checkLoginAndRedirectIfNeeded()) {
-            startActivity(new Intent(this, SamrtKeyActivity.class));
+            startActivity(new Intent(this, SmartKeyActivity.class));
         }
     }
     public void goTodrive(View view) {

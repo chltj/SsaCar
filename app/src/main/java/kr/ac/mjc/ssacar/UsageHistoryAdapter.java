@@ -1,4 +1,4 @@
-package kr.ac.mjc.ssacar.activity;
+package kr.ac.mjc.ssacar;
 
 import android.content.Context;
 import android.view.LayoutInflater;

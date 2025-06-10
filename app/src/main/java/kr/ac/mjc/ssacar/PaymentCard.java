@@ -96,6 +96,20 @@ public class PaymentCard implements Parcelable {
         }
     }
 
+    // 새로운 메서드 추가: 슬래시 형태로 카드 표시
+    public String getShortCardDisplay() {
+        if (cardNumber != null && cardNumber.length() >= 4) {
+            String lastFour = cardNumber.substring(cardNumber.length() - 4);
+            return "/" + lastFour;
+        }
+        return "/****";
+    }
+
+    // 카드 타입 + 슬래시 번호 조합
+    public String getCardTypeWithShortNumber() {
+        return cardType + " " + getShortCardDisplay();
+    }
+
     // Getters and Setters
     public String getCardId() { return cardId; }
     public void setCardId(String cardId) { this.cardId = cardId; }

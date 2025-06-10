@@ -28,11 +28,17 @@ public class TimeSettingActivity extends AppCompatActivity {
     private Spinner arrivalTimeSpinner;
     private Button confirmButton;
 
-    private String placeName;
-    private String address;
-    private double latitude;
-    private double longitude;
-    private String source; // 출처 구분용
+    // 출발지 정보 (CallHere에서 온 정보)
+    private String startPlaceName;
+    private String startAddress;
+    private double startLatitude;
+    private double startLongitude;
+
+    // 도착지 정보 (CallReturn에서 온 정보)
+    private String endPlaceName;
+    private String endAddress;
+    private double endLatitude;
+    private double endLongitude;
 
     private List<String> timeList;
 
@@ -47,16 +53,38 @@ public class TimeSettingActivity extends AppCompatActivity {
         arrivalTimeSpinner = findViewById(R.id.arrival_time_spinner);
         confirmButton = findViewById(R.id.confirm_button);
 
-        // Intent에서 위치 정보 및 출처 받기
+        // Intent에서 출발지와 도착지 정보 받기 (CallReturn에서 전달됨)
         Intent intent = getIntent();
-        placeName = intent.getStringExtra("place_name");
-        address = intent.getStringExtra("address");
-        latitude = intent.getDoubleExtra("latitude", 0.0);
-        longitude = intent.getDoubleExtra("longitude", 0.0);
-        source = intent.getStringExtra("source"); // 추가: callhere / pickup
 
-        // 위치 정보 표시
-        locationInfoTv.setText(placeName + "\n" + (address != null ? address : ""));
+        // 출발지 정보
+        startPlaceName = intent.getStringExtra("start_place_name");
+        startAddress = intent.getStringExtra("start_address");
+        startLatitude = intent.getDoubleExtra("start_latitude", 0.0);
+        startLongitude = intent.getDoubleExtra("start_longitude", 0.0);
+
+        // 도착지 정보
+        endPlaceName = intent.getStringExtra("end_place_name");
+        endAddress = intent.getStringExtra("end_address");
+        endLatitude = intent.getDoubleExtra("end_latitude", 0.0);
+        endLongitude = intent.getDoubleExtra("end_longitude", 0.0);
+
+        // 위치 정보 표시 (출발지와 도착지 모두 표시)
+        String locationInfo;
+        if (startAddress != null && endAddress != null) {
+            // 출발지와 도착지가 모두 있는 경우
+            locationInfo = "대여장소\n" +
+                    "출발: " + startAddress + "\n" +
+                    "도착: " + endAddress;
+        } else if (startPlaceName != null) {
+            // 출발지만 있는 경우 - 도착지에도 출발지 데이터 사용
+            locationInfo = "대여장소\n" +
+                    "출발: " + startPlaceName + "\n" +
+                    "도착: " + startPlaceName;
+        } else {
+            // 아무 정보도 없는 경우
+            locationInfo = "위치 정보를 받지 못했습니다.";
+        }
+        locationInfoTv.setText(locationInfo);
 
         // 시간 스피너 설정
         setupTimeSpinners();
@@ -72,7 +100,7 @@ public class TimeSettingActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 확인 버튼 클릭 리스너
+        // 확인 버튼 클릭 리스너 - 수정된 부분
         confirmButton.setOnClickListener(v -> {
             String departureTime = departureTimeSpinner.getSelectedItem().toString();
             String arrivalTime = arrivalTimeSpinner.getSelectedItem().toString();
@@ -87,22 +115,26 @@ public class TimeSettingActivity extends AppCompatActivity {
             }
 
             try {
-                Intent nextIntent;
+                // VehicleListActivity로 모든 정보 전달
+                Intent nextIntent = new Intent(TimeSettingActivity.this, VehicleListActivity.class);
 
-                if ("callhere".equals(source)) {
-                    nextIntent = new Intent(TimeSettingActivity.this, CallReturnActivity.class);
-                    nextIntent.putExtra("address", address);
-                    nextIntent.putExtra("latitude", latitude);
-                    nextIntent.putExtra("longitude", longitude);
+                // 출발지 정보 전달
+                nextIntent.putExtra("start_place_name", startPlaceName);
+                nextIntent.putExtra("start_address", startAddress);
+                nextIntent.putExtra("start_latitude", startLatitude);
+                nextIntent.putExtra("start_longitude", startLongitude);
 
-                } else {
-                    nextIntent = new Intent(TimeSettingActivity.this, VehicleListActivity.class);
-                }
+                // 도착지 정보 전달
+                nextIntent.putExtra("end_place_name", endPlaceName);
+                nextIntent.putExtra("end_address", endAddress);
+                nextIntent.putExtra("end_latitude", endLatitude);
+                nextIntent.putExtra("end_longitude", endLongitude);
 
-                nextIntent.putExtra("place_name", placeName);
+                // 시간 정보 전달
                 nextIntent.putExtra("departure_time", departureTime);
                 nextIntent.putExtra("arrival_time", arrivalTime);
 
+                android.util.Log.d("TimeSettingActivity", "VehicleListActivity로 이동 - 출발지: " + startPlaceName + ", 도착지: " + endPlaceName);
                 startActivity(nextIntent);
 
             } catch (Exception e) {

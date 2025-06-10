@@ -16,7 +16,7 @@ import java.util.List;
 
 import kr.ac.mjc.ssacar.PaymentHistory;
 import kr.ac.mjc.ssacar.R;
-import kr.ac.mjc.ssacar.activity.UsageHistoryAdapter;
+import kr.ac.mjc.ssacar.UsageHistoryAdapter;
 
 public class UsageHistoryActivity extends AppCompatActivity {
 

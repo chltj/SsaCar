@@ -25,6 +25,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import kr.ac.mjc.ssacar.NotificationItem;
 import kr.ac.mjc.ssacar.PaymentCard;
@@ -50,10 +51,22 @@ public class PaymentActivity extends AppCompatActivity {
     int insurancePrice = 0;
     int totalPrice = 0;
 
-    String placeName;
-    String address;
-    String departureTime;
-    String arrivalTime;
+    // 출발지 정보
+    private String startPlaceName;
+    private String startAddress;
+    private double startLatitude;
+    private double startLongitude;
+
+    // 도착지 정보
+    private String endPlaceName;
+    private String endAddress;
+    private double endLatitude;
+    private double endLongitude;
+
+    // 시간 정보
+    private String departureTime;
+    private String arrivalTime;
+    private String selectedMonth;
     private ImageView carImageView;
     String usageType;
 
@@ -87,26 +100,32 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void setupSpinner() {
-        List<PaymentCard> cardList = new ArrayList<>();
         List<String> paymentMethods = new ArrayList<>();
 
+        // 등록된 카드 불러오기
+        List<PaymentCard> registeredCards = loadRegisteredCards();
+
+        Log.d("PaymentActivity", "등록된 카드 수: " + registeredCards.size());
+
         // 등록된 카드가 있다면 먼저 추가
-        if (cardList != null && !cardList.isEmpty()) {
-            for (PaymentCard card : cardList) {
-                paymentMethods.add(card.getCardType() + " (" + card.getMaskedCardNumber() + ")");
+        if (registeredCards != null && !registeredCards.isEmpty()) {
+            for (PaymentCard card : registeredCards) {
+                // /1234 형태로 표시
+                String cardDisplay = card.getCardTypeWithShortNumber();
+                paymentMethods.add(cardDisplay);
+                Log.d("PaymentActivity", "카드 추가: " + cardDisplay);
             }
         } else {
             paymentMethods.add("신용카드 선택");
+            Log.d("PaymentActivity", "등록된 카드 없음 - 기본 선택 추가");
         }
 
         // 항상 들어가는 페이 결제 수단들
-        List<String> payMethods = new ArrayList<>();
-        payMethods.add("토스페이");
-        payMethods.add("카카오페이");
-        payMethods.add("네이버페이");
+        paymentMethods.add("토스페이");
+        paymentMethods.add("카카오페이");
+        paymentMethods.add("네이버페이");
 
-        // 결합
-        paymentMethods.addAll(payMethods);
+        Log.d("PaymentActivity", "총 결제 수단 수: " + paymentMethods.size());
 
         // Spinner 어댑터 설정
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -144,11 +163,28 @@ public class PaymentActivity extends AppCompatActivity {
         Intent intent = getIntent();
         selectedVehicle = intent.getParcelableExtra("selected_vehicle");
 
+        // 출발지 정보 받기
+        startPlaceName = intent.getStringExtra("start_place_name");
+        startAddress = intent.getStringExtra("start_address");
+        startLatitude = intent.getDoubleExtra("start_latitude", 0.0);
+        startLongitude = intent.getDoubleExtra("start_longitude", 0.0);
 
-        placeName = intent.getStringExtra("place_name");
-        address = intent.getStringExtra("address");
+        // 도착지 정보 받기
+        endPlaceName = intent.getStringExtra("end_place_name");
+        endAddress = intent.getStringExtra("end_address");
+        endLatitude = intent.getDoubleExtra("end_latitude", 0.0);
+        endLongitude = intent.getDoubleExtra("end_longitude", 0.0);
+
+        // 시간 정보 받기
         departureTime = intent.getStringExtra("departure_time");
         arrivalTime = intent.getStringExtra("arrival_time");
+        selectedMonth= intent.getStringExtra("selected_month");
+
+        // 디버그 로그 추가
+        Log.d("PaymentActivity", "출발지: " + startPlaceName);
+        Log.d("PaymentActivity", "도착지: " + endPlaceName);
+        Log.d("PaymentActivity", "출발시간: " + departureTime);
+        Log.d("PaymentActivity", "도착시간: " + arrivalTime);
 
         if (selectedVehicle != null) {
             if (selectedVehicle.hasOnlineImage()) {
@@ -176,12 +212,35 @@ public class PaymentActivity extends AppCompatActivity {
             basePrice = 31000;
         }
 
-        // 위치 및 시간 정보 표시
-        String locationInfo = placeName + "\n" + address;
-        locationTv.setText(locationInfo);
+        // 위치 정보 표시 - 출발지와 도착지 구분해서 표시
+        StringBuilder locationInfo = new StringBuilder();
+        if (startAddress != null && endAddress != null) {
+            // 출발지와 도착지가 모두 있는 경우
+            locationInfo.append("출발: ").append(startAddress).append("\n");
+            locationInfo.append("도착: ").append(endAddress);
+        } else if (startPlaceName != null) {
+            // 출발지만 있는 경우 (이전 버전 호환)
+            locationInfo.append("선택 위치: ").append(startPlaceName);
+            if (startAddress != null) {
+                locationInfo.append("\n").append(startAddress);
+            }
+        } else {
+            // 아무 정보도 없는 경우
+            locationInfo.append("명지전문대학교 주차장");
+        }
+        locationTv.setText(locationInfo.toString());
 
-        String timeInfo = "출발: " + departureTime + "\n반납: " + arrivalTime;
-        usageTimeTv.setText(timeInfo);
+        // 시간 정보 표시
+        StringBuilder timeInfo = new StringBuilder();
+        if (departureTime != null && arrivalTime != null) {
+            timeInfo.append("출발: ").append(departureTime).append("\n");
+            timeInfo.append("반납: ").append(arrivalTime);
+        } else if (departureTime != null) {
+            timeInfo.append("출발: ").append(departureTime);
+        } else {
+            timeInfo.append("렌트기간 ").append(selectedMonth);
+        }
+        usageTimeTv.setText(timeInfo.toString());
 
         radioInsurance.check(R.id.radio_70);
     }
@@ -224,9 +283,6 @@ public class PaymentActivity extends AppCompatActivity {
         }, 2000);
     }
 
-
-
-
     private void finishPayment() {
         // 사용자 ID 기반으로 저장
         SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
@@ -239,11 +295,23 @@ public class PaymentActivity extends AppCompatActivity {
         String json = prefs.getString("history_list_" + currentUserId, null);
         List<PaymentHistory> list = (json != null) ? gson.fromJson(json, type) : new ArrayList<>();
 
+        // PaymentHistory 생성 시 출발지와 도착지 정보 포함
+        String locationForHistory;
+        if (startPlaceName != null && endPlaceName != null) {
+            locationForHistory = startPlaceName + " → " + endPlaceName;
+        } else if (startPlaceName != null) {
+            locationForHistory = startPlaceName;
+        } else {
+            locationForHistory = "위치 정보 없음";
+        }
+
+        String addressForHistory = startAddress != null ? startAddress : "주소 정보 없음";
+
         PaymentHistory newItem = new PaymentHistory(
                 selectedVehicle.getName(),
                 selectedVehicle.getEngineType(),
-                placeName,
-                address,
+                locationForHistory,  // 출발지 → 도착지 형태로 저장
+                addressForHistory,
                 departureTime,
                 arrivalTime,
                 totalPrice,
@@ -283,6 +351,7 @@ public class PaymentActivity extends AppCompatActivity {
             prefs.edit().putString("history_list_" + currentUserId, new Gson().toJson(list)).apply();
         }
     }
+
     private void saveNotificationForUser(List<NotificationItem> notifications) {
         SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
         String currentUserId = userPrefs.getString("current_user_id", null);
@@ -293,6 +362,41 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
 
+    // 등록된 카드 불러오기 메서드 수정
+    private List<PaymentCard> loadRegisteredCards() {
+        List<PaymentCard> cards = new ArrayList<>();
+        try {
+            SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
+            String currentUserId = userPrefs.getString("current_user_id", null);
 
+            Log.d("PaymentActivity", "현재 사용자 ID: " + currentUserId);
 
+            if (currentUserId != null) {
+                SharedPreferences cardPrefs = getSharedPreferences("ssacar_cards", MODE_PRIVATE);
+                Set<String> savedSet = cardPrefs.getStringSet("cards_" + currentUserId, null);
+
+                Log.d("PaymentActivity", "저장된 카드 Set: " + (savedSet != null ? savedSet.size() : "null"));
+
+                if (savedSet != null && !savedSet.isEmpty()) {
+                    Gson gson = new Gson();
+                    for (String json : savedSet) {
+                        try {
+                            PaymentCard card = gson.fromJson(json, PaymentCard.class);
+                            if (card != null) {
+                                cards.add(card);
+                                Log.d("PaymentActivity", "카드 로드 성공: " + card.getCardType() + " " + card.getMaskedCardNumber());
+                            }
+                        } catch (Exception e) {
+                            Log.e("PaymentActivity", "카드 파싱 오류: " + e.getMessage());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("PaymentActivity", "카드 불러오기 실패", e);
+        }
+
+        Log.d("PaymentActivity", "최종 로드된 카드 수: " + cards.size());
+        return cards;
+    }
 }

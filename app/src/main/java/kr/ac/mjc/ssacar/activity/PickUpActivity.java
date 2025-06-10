@@ -216,12 +216,8 @@ public class PickUpActivity extends AppCompatActivity implements OnMapReadyCallb
 
     // ★ 특정 위치 주변의 주차장만 검색하는 메서드
     public void searchNearbyParking(double latitude, double longitude) {
-        // 주차장 관련 키워드로 검색
-        String[] parkingKeywords = {"주차장", "공영주차장", "민영주차장", "지하주차장"};
-
-        for (String keyword : parkingKeywords) {
-            searchParkingByKeyword(keyword, latitude, longitude);
-        }
+        // 하나의 키워드로 통합 검색
+        searchParkingByKeyword("주차장", latitude, longitude);
     }
 
     private void searchParkingByKeyword(String keyword, double latitude, double longitude) {
@@ -305,10 +301,10 @@ public class PickUpActivity extends AppCompatActivity implements OnMapReadyCallb
         Intent intent = new Intent(PickUpActivity.this, TimeSettingActivity.class);
 
         // 선택된 위치 정보를 Intent에 담아서 전달
-        intent.putExtra("place_name", marker.getTitle());
-        intent.putExtra("address", marker.getSnippet());
-        intent.putExtra("latitude", marker.getPosition().latitude);
-        intent.putExtra("longitude", marker.getPosition().longitude);
+        intent.putExtra("start_place_name", marker.getTitle());
+        intent.putExtra("start_address", marker.getSnippet());
+        intent.putExtra("start_latitude", marker.getPosition().latitude);
+        intent.putExtra("start_longitude", marker.getPosition().longitude);
 
         startActivity(intent);
 
