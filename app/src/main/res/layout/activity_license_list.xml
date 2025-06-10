@@ -1,13 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:background="#F5F5F5"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_license_info"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:color/white"
+        android:elevation="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="나의면허"
+            android:textColor="#333333"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <!-- 면허 정보 영역 (가중치를 1로 설정하여 남은 공간을 모두 차지) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="20dp">
+
+        <!-- 마이페이지 아이콘 -->
+        <ImageView
+            android:id="@+id/iv_mypage_icon"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_mypage"
+            android:layout_marginBottom="20dp"
+            android:scaleType="centerCrop" />
+
+        <!-- 면허 정보 텍스트 -->
+        <TextView
+            android:id="@+id/text_license_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="등록된 면허 정보가 표시됩니다"
+            android:textSize="18sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp" />
+
+    </LinearLayout>
+
+    <!-- 하단 고정 버튼 -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="등록된 면허 정보가 표시됩니다"
-        android:textSize="18sp" />
+        android:background="@android:color/white"
+        android:elevation="8dp"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/button_home"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="홈으로 가기"
+            android:backgroundTint="#000000"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="12dp" />
+
+    </LinearLayout>
 </LinearLayout>

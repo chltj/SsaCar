@@ -1,6 +1,7 @@
 package kr.ac.mjc.ssacar.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,7 @@ public class PaymentLicenseActivity extends AppCompatActivity implements CardLis
 
     // Activity Result Launcher
     private ActivityResultLauncher<Intent> cardRegistrationLauncher;
+    private String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ public class PaymentLicenseActivity extends AppCompatActivity implements CardLis
         setContentView(R.layout.activity_payment_license);
 
         Log.d(TAG, "PaymentLicenseActivity 시작");
+
+        SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
+        currentUserId = userPrefs.getString("current_user_id", null);
+
 
         // Activity Result Launcher 초기화
         setupActivityResultLauncher();
@@ -229,33 +235,38 @@ public class PaymentLicenseActivity extends AppCompatActivity implements CardLis
                 cardJsonList.add(new Gson().toJson(card));
             }
 
-            getSharedPreferences("ssacar", MODE_PRIVATE)
-                    .edit()
-                    .putStringSet("saved_cards", new HashSet<>(cardJsonList))
-                    .apply();
+            // 사용자 ID 기준으로 저장
+            if (currentUserId != null) {
+                getSharedPreferences("ssacar_cards", MODE_PRIVATE)
+                        .edit()
+                        .putStringSet("cards_" + currentUserId, new HashSet<>(cardJsonList))
+                        .apply();
 
-            Log.d(TAG, "카드 정보 SharedPreferences에 저장 완료");
+                Log.d(TAG, "카드 정보 저장 완료 - 사용자: " + currentUserId);
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "카드 저장 실패", e);
         }
     }
+
     private void initData() {
         try {
             cardList = new ArrayList<>();
 
-            // ✅ SharedPreferences에서 불러오기
-            Set<String> savedSet = getSharedPreferences("ssacar", MODE_PRIVATE)
-                    .getStringSet("saved_cards", null);
+            if (currentUserId != null) {
+                Set<String> savedSet = getSharedPreferences("ssacar_cards", MODE_PRIVATE)
+                        .getStringSet("cards_" + currentUserId, null);
 
-            if (savedSet != null) {
-                for (String json : savedSet) {
-                    PaymentCard card = new Gson().fromJson(json, PaymentCard.class);
-                    cardList.add(card);
+                if (savedSet != null) {
+                    for (String json : savedSet) {
+                        PaymentCard card = new Gson().fromJson(json, PaymentCard.class);
+                        cardList.add(card);
+                    }
+                    Log.d(TAG, "사용자 카드 불러옴 (" + currentUserId + "): " + cardList.size() + "개");
+                } else {
+                    Log.d(TAG, "해당 사용자의 저장된 카드 없음");
                 }
-                Log.d(TAG, "저장된 카드 불러옴: " + cardList.size() + "개");
-            } else {
-                Log.d(TAG, "저장된 카드 없음");
             }
 
         } catch (Exception e) {
@@ -263,6 +274,7 @@ public class PaymentLicenseActivity extends AppCompatActivity implements CardLis
             cardList = new ArrayList<>();
         }
     }
+
 
 
 

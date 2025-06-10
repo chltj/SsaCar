@@ -180,12 +180,14 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.CarViewHolder> {
     public static class CarViewHolder extends RecyclerView.ViewHolder {
         TextView carName, carPrice;
         ImageView carImage;
+        ImageView arrowIcon;
 
         public CarViewHolder(@NonNull View itemView) {
             super(itemView);
             carName = itemView.findViewById(R.id.carName);
             carPrice = itemView.findViewById(R.id.carPrice);
             carImage = itemView.findViewById(R.id.carImage);
+            arrowIcon = itemView.findViewById(R.id.ic_arrow_forward);
         }
     }
 }

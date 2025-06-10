@@ -136,27 +136,6 @@
         android:layout_marginTop="8dp">
 
         <!-- 고객센터 -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:onClick="goToSmartkey"
-            tools:ignore="OnClick">
-
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_lock_close" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="스마트키"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
 
         <!-- 이용내역 -->
         <LinearLayout

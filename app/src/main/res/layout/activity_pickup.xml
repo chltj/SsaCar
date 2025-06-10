@@ -24,10 +24,9 @@
         android:layout_margin="20dp"
         android:background="#ffffff"
         android:ems="10"
-        android:hint="키워드를 입력하세요"
+        android:hint="건물 혹은 주소를 입력하세요"
         android:inputType="text"
         android:padding="10dp"
-        android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

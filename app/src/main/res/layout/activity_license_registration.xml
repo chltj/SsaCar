@@ -1,73 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp">
+    android:background="#F7F7F7"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- 상단 헤더 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@android:color/white"
+            android:elevation="4dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="면허 등록"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <!-- 안내 텍스트 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="운전면허 등록"
-            android:textSize="22sp"
+            android:text="운전면허 정보를 입력해주세요."
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="#000000"
+            android:layout_marginBottom="24dp" />
 
-        <!-- 면허 번호 -->
-        <EditText
-            android:id="@+id/edit_license_number"
-            android:layout_width="match_parent"
+        <!-- 면허번호 입력 -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="면허 번호 (예: 12-34-567890-12)"
-            android:inputType="text"/>
-
-        <!-- 발급일자 -->
+            android:text="면허번호"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
         <EditText
-            android:id="@+id/edit_issue_date"
+            android:id="@+id/editTextLicenseNumber"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="발급일자 (예: 2020-01-01)"
-            android:inputType="date"
-            android:layout_marginTop="12dp"/>
+            android:layout_height="48dp"
+            android:hint="면허번호 입력 (예: 11-12-345678-90)"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="16dp" />
 
-        <!-- 면허 종류 -->
+        <!-- 발급일자 입력 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="발급일자"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
         <EditText
-            android:id="@+id/edit_license_type"
+            android:id="@+id/editTextIssueDate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="면허 종류 (예: 1종 보통, 2종 소형)"
-            android:inputType="text"
-            android:layout_marginTop="12dp"/>
+            android:layout_height="48dp"
+            android:hint="발급일자 입력 (예: 2023-01-15)"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="16dp" />
 
-        <!-- 발급 기관 -->
+        <!-- 면허종류 입력 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="면허종류"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
         <EditText
-            android:id="@+id/edit_issued_by"
+            android:id="@+id/editTextLicenseType"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="발급 기관 (예: 서울운전면허시험장)"
-            android:inputType="text"
-            android:layout_marginTop="12dp"/>
+            android:layout_height="48dp"
+            android:hint="면허종류 입력 (예: 1종보통)"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="16dp" />
 
-        <!-- 유효기간 -->
+        <!-- 발급기관 입력 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="발급기관"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
         <EditText
-            android:id="@+id/edit_expiration_date"
+            android:id="@+id/editTextIssuedBy"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="유효기간 (예: 2030-12-31)"
-            android:inputType="date"
-            android:layout_marginTop="12dp"/>
+            android:layout_height="48dp"
+            android:hint="발급기관 입력 (예: 서울지방경찰청)"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="16dp" />
 
-        <!-- 등록 완료 버튼 -->
+        <!-- 유효기간 입력 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="유효기간"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
+        <EditText
+            android:id="@+id/editTextExpirationDate"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="유효기간 입력 (예: 2030-01-15)"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginBottom="24dp" />
+
+        <!-- 등록 버튼 -->
         <Button
-            android:id="@+id/btn_submit"
+            android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="등록 완료"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#FF7F8187"
-            android:textColor="#FFFFFF"/>
+            android:layout_height="56dp"
+            android:text="면허 등록 완료"
+            android:backgroundTint="#7D89FF"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 </ScrollView>

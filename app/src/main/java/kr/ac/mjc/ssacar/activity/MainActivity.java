@@ -1,6 +1,7 @@
 package kr.ac.mjc.ssacar.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -108,59 +109,86 @@ public class MainActivity extends AppCompatActivity {
         Button btnOneway = findViewById(R.id.btn_oneway);
         Button btnLongterm = findViewById(R.id.btn_longterm);
 
-        btnCallHere.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, CallHereActivity.class)));
+        btnCallHere.setOnClickListener(v -> {
+            if (checkLoginAndRedirectIfNeeded()) {
+                startActivity(new Intent(MainActivity.this, CallHereActivity.class));
+            }
+        });
 
-        btnPickup.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, PickUpActivity.class)));
+        btnPickup.setOnClickListener(v ->{
+        if (checkLoginAndRedirectIfNeeded()) {
+                startActivity(new Intent(MainActivity.this, PickUpActivity.class));
+        }
+    });
 
-        btnOneway.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, OnewayActivity.class)));
-
-        btnLongterm.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, LongtermActivity.class)));
-
+        btnOneway.setOnClickListener(v ->{
+        if (checkLoginAndRedirectIfNeeded()) {
+            startActivity(new Intent(MainActivity.this, OnewayActivity.class));
+        }
+    });
+        btnLongterm.setOnClickListener(v ->{
+        if (checkLoginAndRedirectIfNeeded()) {
+            startActivity(new Intent(MainActivity.this, LongtermActivity.class));
+        }
+    });
         Log.d(TAG, "버튼 설정 완료");
     }
 
 
 
     public void goToHistory(View view) {
-        // 예시: 다른 화면으로 이동
-        Intent intent = new Intent(this, UsageHistoryActivity.class);
-        startActivity(intent);
-
+        if (checkLoginAndRedirectIfNeeded()) {
+            startActivity(new Intent(this, UsageHistoryActivity.class));
+        }
+    }
+    public void goToPayment(View view) {
+        if (checkLoginAndRedirectIfNeeded()) {
+            try {
+                Log.d(TAG, "결제 화면으로 이동 시도");
+                Intent intent = new Intent(this, PaymentLicenseActivity.class);
+                startActivity(intent);
+            } catch (Exception e) {
+                Log.e(TAG, "결제 화면 이동 실패: " + e.getMessage());
+                Toast.makeText(this, "결제 기능은 준비 중입니다.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void goToSmartkey(View view) {
-        // 원하는 동작 수행
-        Intent intent = new Intent(this, SamrtKeyActivity.class);
-        startActivity(intent);
+        if (checkLoginAndRedirectIfNeeded()) {
+            startActivity(new Intent(this, SamrtKeyActivity.class));
+        }
     }
     public void goTodrive(View view) {
-        Intent intent = new Intent(MainActivity.this, LicenseListActivity.class);
-        startActivity(intent);
+        if (checkLoginAndRedirectIfNeeded()) {
+            startActivity(new Intent(this, LicenseListActivity.class));
+        }
     }
 
     private void setupIconListeners() {
-        notificationIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
-                startActivity(intent);
-            }
+        notificationIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
+            startActivity(intent);
         });
 
-        mypageIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MyPageActivity.class);
-                startActivity(intent);
+        mypageIcon.setOnClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences("current_user", MODE_PRIVATE);
+            String currentUserId = prefs.getString("current_user_id", null);
+
+            Intent intent;
+            if (currentUserId != null) {
+                // 로그인 상태면 마이페이지로 이동
+                intent = new Intent(MainActivity.this, MypageActivity.class);
+            } else {
+                // 비로그인 상태면 로그인 페이지로 이동
+                intent = new Intent(MainActivity.this, LoginActivity.class);
             }
+            startActivity(intent);
         });
 
         Log.d(TAG, "아이콘 리스너 설정 완료");
     }
+
 
     // 현대자동차 API에서 차량 데이터 로드
     // ★ 이렇게 수정하세요!
@@ -183,9 +211,6 @@ public class MainActivity extends AppCompatActivity {
                 "스타리아", "포터"
         };
 
-        for (String carName : allHyundaiCars) {
-            loadCarsByQuery(carName);
-        }
     }
 
     // 로딩 중 표시할 기본 차량들
@@ -202,35 +227,6 @@ public class MainActivity extends AppCompatActivity {
         }, 10000);
     }
 
-    // 특정 키워드로 차량 검색
-    private void loadCarsByQuery(String query) {
-        String apiUrl = "https://www.hyundai.com/kr/ko/e-srv/search.search-service?site_code=hmk&collection=EP_TOTAL_MODEL&query=" + query + "&start_count=0&count=3";
-
-        Log.d(TAG, "API 호출: " + query);
-
-        Request request = new Request.Builder()
-                .url(apiUrl)
-                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "API 호출 실패: " + query, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
-                    Log.d(TAG, "API 응답 성공: " + query);
-                    parseAPIResponse(responseBody);
-                } else {
-                    Log.e(TAG, "API 응답 실패: " + response.code() + " for " + query);
-                }
-            }
-        });
-    }
 
     // API 응답 파싱
     private void parseAPIResponse(String response) {
@@ -670,19 +666,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void goToPayment(View view) {
-        try {
-            Log.d(TAG, "결제 화면으로 이동 시도");
 
-            // 결제 액티비티가 있다면 실제 결제 화면으로 이동
-            Intent intent = new Intent(this, PaymentLicenseActivity.class);
-            startActivity(intent);
+    private boolean checkLoginAndRedirectIfNeeded() {
+        SharedPreferences prefs = getSharedPreferences("current_user", MODE_PRIVATE);
+        String currentUserId = prefs.getString("current_user_id", null);
 
-        } catch (Exception e) {
-            Log.e(TAG, "결제 화면 이동 실패: " + e.getMessage());
-
-            // PaymentActivity가 없거나 오류가 발생한 경우
-            Toast.makeText(this, "결제 기능은 준비 중입니다.", Toast.LENGTH_SHORT).show();
+        if (currentUserId == null) {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("로그인 필요")
+                    .setMessage("이 기능은 로그인 후 사용 가능합니다.")
+                    .setPositiveButton("로그인", (dialog, which) -> {
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .setNegativeButton("취소", null)
+                    .show();
+            return false;
         }
+        return true;
     }
 }

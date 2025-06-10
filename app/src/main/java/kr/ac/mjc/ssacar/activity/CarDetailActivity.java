@@ -37,7 +37,7 @@ public class CarDetailActivity extends AppCompatActivity {
     private TextView carEfficiencyText;
     private TextView carFeaturesText;
     private Button purchaseButton;
-    private Button backButton;
+    private TextView backButton; // ★ TextView로 변경 (XML에서 TextView 사용)
 
     // 차량 정보
     private String carName;
@@ -74,7 +74,6 @@ public class CarDetailActivity extends AppCompatActivity {
             showDefaultInfo();
         }
     }
-
 
     public void getApiInfo(String carName){
         Log.d("getApiInfo",carName);
@@ -133,7 +132,6 @@ public class CarDetailActivity extends AppCompatActivity {
         });
     }
 
-
     private void initViews() {
         try {
             carImageView = findViewById(R.id.car_detail_image);
@@ -141,6 +139,8 @@ public class CarDetailActivity extends AppCompatActivity {
             carPriceText = findViewById(R.id.car_detail_price);
             carEngineTypeText = findViewById(R.id.car_detail_engine_type);
             carEfficiencyText = findViewById(R.id.car_detail_efficiency);
+
+            // ★ 올바른 ID로 뒤로가기 버튼 찾기
             backButton = findViewById(R.id.back_button);
 
             // car_features_text는 없을 수도 있으므로 예외 처리
@@ -150,6 +150,8 @@ public class CarDetailActivity extends AppCompatActivity {
                 Log.w(TAG, "car_features_text를 찾을 수 없음 (정상)");
                 carFeaturesText = null;
             }
+
+
 
             Log.d(TAG, "뷰 초기화 완료");
         } catch (Exception e) {
@@ -220,8 +222,18 @@ public class CarDetailActivity extends AppCompatActivity {
                 return;
             }
 
+            // ★ 제네시스와 벨로스터는 로컬 이미지 사용
+            if (carName != null) {
+                int localImageRes = getLocalImageResource(carName);
+                if (localImageRes != 0) {
+                    carImageView.setImageResource(localImageRes);
+                    Log.d(TAG, "로컬 이미지 사용: " + carName + " -> " + localImageRes);
+                    return;
+                }
+            }
+
+            // 온라인 이미지가 있으면 로딩
             if (carImageUrl != null && !carImageUrl.isEmpty() && carImageUrl.startsWith("http")) {
-                // 온라인 이미지 로딩
                 Log.d(TAG, "온라인 이미지 로딩 시도: " + carImageUrl);
 
                 Glide.with(this)
@@ -248,6 +260,26 @@ public class CarDetailActivity extends AppCompatActivity {
                 Log.e(TAG, "기본 이미지 설정도 실패", e2);
             }
         }
+    }
+
+    // ★ 로컬 이미지 리소스를 반환하는 메서드
+    private int getLocalImageResource(String carName) {
+        if (carName == null) return 0;
+
+        // 제네시스 차량들
+        if (carName.contains("제네시스 G90") || carName.contains("G90")) {
+            return R.drawable.g90;
+        } else if (carName.contains("제네시스 GV70") || carName.contains("GV70")) {
+            return R.drawable.gv70;
+        } else if (carName.contains("제네시스 G80") || carName.contains("G80")) {
+            return R.drawable.g80;
+        }
+        // 벨로스터
+        else if (carName.contains("벨로스터") || carName.contains("vel")) {
+            return R.drawable.vel;
+        }
+
+        return 0; // 로컬 이미지가 없는 경우
     }
 
     private void setupCarFeatures() {
@@ -319,12 +351,13 @@ public class CarDetailActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         try {
-            // 뒤로가기 버튼
+            // ★ 뒤로가기 버튼 (TextView)
             if (backButton != null) {
                 backButton.setOnClickListener(v -> {
                     Log.d(TAG, "뒤로가기 버튼 클릭");
-                    finish();
+                    finish(); // 현재 Activity 종료하고 이전 화면으로 돌아가기
                 });
+                Log.d(TAG, "뒤로가기 버튼 리스너 설정 완료");
             } else {
                 Log.w(TAG, "뒤로가기 버튼을 찾을 수 없음");
             }
@@ -335,6 +368,7 @@ public class CarDetailActivity extends AppCompatActivity {
                     Log.d(TAG, "구매 버튼 클릭: " + carName);
                     handlePurchaseClick();
                 });
+                Log.d(TAG, "구매 버튼 리스너 설정 완료");
             } else {
                 Log.w(TAG, "구매 버튼을 찾을 수 없음");
             }

@@ -228,22 +228,17 @@ public class PaymentActivity extends AppCompatActivity {
 
 
     private void finishPayment() {
-        // 1. 결제 정보 저장
-        SharedPreferences prefs = getSharedPreferences("payment_history", MODE_PRIVATE);
+        // 사용자 ID 기반으로 저장
+        SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
+        String currentUserId = userPrefs.getString("current_user_id", null);
+        if (currentUserId == null) return;
+
         Gson gson = new Gson();
+        Type type = new TypeToken<List<PaymentHistory>>() {}.getType();
+        SharedPreferences prefs = getSharedPreferences("payment_history", MODE_PRIVATE);
+        String json = prefs.getString("history_list_" + currentUserId, null);
+        List<PaymentHistory> list = (json != null) ? gson.fromJson(json, type) : new ArrayList<>();
 
-
-
-        String json = prefs.getString("history_list", null);
-        List<PaymentHistory> list;
-        if (json != null) {
-            Type type = new TypeToken<List<PaymentHistory>>() {}.getType();
-            list = gson.fromJson(json, type);
-        } else {
-            list = new ArrayList<>();
-        }
-
-        // 새 결제 항목 생성 및 추가 (최신순으로 앞에 삽입)
         PaymentHistory newItem = new PaymentHistory(
                 selectedVehicle.getName(),
                 selectedVehicle.getEngineType(),
@@ -255,41 +250,49 @@ public class PaymentActivity extends AppCompatActivity {
                 spinnerCard.getSelectedItem().toString(),
                 selectedVehicle.getImageUrl()
         );
-
         list.add(0, newItem);
-        prefs.edit().putString("history_list", gson.toJson(list)).apply();
-        Log.d("PaymentHistory", "Saved list size: " + list.size());
+        saveHistoryForUser(list);
 
-        // 2. 다음 화면으로 이동
-        Intent intent = new Intent(this, UsageHistoryActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-
-        // 알림 데이터 저장
-        SharedPreferences nprefs = getSharedPreferences("notification_storage", MODE_PRIVATE);
-        String njson = nprefs.getString("notifications", null);
-        List<NotificationItem> notifications;
-
+        // 알림 저장
         Type ntype = new TypeToken<List<NotificationItem>>() {}.getType();
-        Gson ngson = new Gson();
-
-        if (njson != null) {
-            notifications = ngson.fromJson(njson, ntype);
-        } else {
-            notifications = new ArrayList<>();
-        }
+        SharedPreferences nprefs = getSharedPreferences("notification_storage", MODE_PRIVATE);
+        String njson = nprefs.getString("notifications_" + currentUserId, null);
+        List<NotificationItem> notifications = (njson != null) ? gson.fromJson(njson, ntype) : new ArrayList<>();
 
         NotificationItem item = new NotificationItem(
                 "SSACAR 결제 완료",
                 spinnerCard.getSelectedItem().toString() + "로 " + String.format("%,d원", totalPrice) + " 결제가 완료되었습니다!",
                 System.currentTimeMillis()
         );
-
         notifications.add(0, item);
-        nprefs.edit().putString("notifications", ngson.toJson(notifications)).apply();
+        saveNotificationForUser(notifications);
 
+        // 다음 화면 이동
+        Intent intent = new Intent(this, UsageHistoryActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
+
+    private void saveHistoryForUser(List<PaymentHistory> list) {
+        SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
+        String currentUserId = userPrefs.getString("current_user_id", null);
+
+        if (currentUserId != null) {
+            SharedPreferences prefs = getSharedPreferences("payment_history", MODE_PRIVATE);
+            prefs.edit().putString("history_list_" + currentUserId, new Gson().toJson(list)).apply();
+        }
+    }
+    private void saveNotificationForUser(List<NotificationItem> notifications) {
+        SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
+        String currentUserId = userPrefs.getString("current_user_id", null);
+
+        if (currentUserId != null) {
+            SharedPreferences prefs = getSharedPreferences("notification_storage", MODE_PRIVATE);
+            prefs.edit().putString("notifications_" + currentUserId, new Gson().toJson(notifications)).apply();
+        }
+    }
+
 
 
 }

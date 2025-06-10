@@ -58,7 +58,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
         Car car = carList.get(position);
 
         try {
-            // 🔧 올바른 ID로 수정
+            // 차량 정보 설정
             if (holder.carName != null) {
                 holder.carName.setText(car.getName());
             } else {
@@ -106,12 +106,12 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
                 holder.itemView.setAlpha(1.0f);
             }
 
-            // 클릭 이벤트
+            // ★ 전체 카드 클릭 시 - 차량 선택만 (CarDetailActivity 이동 제거)
             holder.itemView.setOnClickListener(v -> {
                 int clickPosition = holder.getAdapterPosition();
                 if (clickPosition == RecyclerView.NO_POSITION) return;
 
-                Log.d(TAG, "차량 클릭: " + car.getName());
+                Log.d(TAG, "차량 선택: " + car.getName());
 
                 // 선택 상태 업데이트
                 int previousPosition = selectedPosition;
@@ -123,29 +123,40 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
                 }
                 notifyItemChanged(selectedPosition);
 
-                // 클릭 리스너 호출
+                // 클릭 리스너 호출 (차량 선택만)
                 if (onVehicleClickListener != null) {
                     onVehicleClickListener.onVehicleClick(car);
-                } else {
-                    // 기본 동작: CarDetailActivity로 이동
-                    Intent intent = new Intent(context, CarDetailActivity.class);
-                    intent.putExtra("car_name", car.getName());
-                    intent.putExtra("car_price", car.getPrice());
-                    intent.putExtra("car_engine_type", car.getEngineType());
-                    intent.putExtra("car_image_url", car.getImageUrl());
-                    intent.putExtra("car_code", car.getCarCode());
-                    intent.putExtra("car_image_res", car.getImageResId());
-
-                    try {
-                        context.startActivity(intent);
-                    } catch (Exception e) {
-                        Log.e(TAG, "CarDetailActivity 시작 실패", e);
-                    }
                 }
             });
 
+            // ★ 화살표 아이콘 클릭 시 - CarDetailActivity로 이동
+            if (holder.arrowIcon != null) {
+                holder.arrowIcon.setOnClickListener(v -> {
+                    Log.d(TAG, "상세보기 클릭: " + car.getName());
+                    openCarDetailActivity(car);
+                });
+            }
+
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder 오류 at position " + position, e);
+        }
+    }
+
+    // ★ CarDetailActivity로 이동하는 메서드
+    private void openCarDetailActivity(Car car) {
+        try {
+            Intent intent = new Intent(context, CarDetailActivity.class);
+            intent.putExtra("car_name", car.getName());
+            intent.putExtra("car_price", car.getPrice());
+            intent.putExtra("car_engine_type", car.getEngineType());
+            intent.putExtra("car_image_url", car.getImageUrl());
+            intent.putExtra("car_code", car.getCarCode());
+            intent.putExtra("car_image_res", car.getImageResId());
+
+            context.startActivity(intent);
+            Log.d(TAG, "CarDetailActivity 시작: " + car.getName());
+        } catch (Exception e) {
+            Log.e(TAG, "CarDetailActivity 시작 실패: " + car.getName(), e);
         }
     }
 
@@ -195,23 +206,26 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
 
     public static class VehicleViewHolder extends RecyclerView.ViewHolder {
         TextView carName, carPrice, carType;
-        ImageView carImage;
+        ImageView carImage, arrowIcon;
 
         public VehicleViewHolder(@NonNull View itemView) {
             super(itemView);
 
             try {
-                // 🔧 item_vehicle.xml의 실제 ID 사용
-                carName = itemView.findViewById(R.id.car_name);      // car_name_tv -> car_name
-                carPrice = itemView.findViewById(R.id.car_price);    // price_tv -> car_price
-                carType = itemView.findViewById(R.id.car_type);      // car_type_tv -> car_type
-                carImage = itemView.findViewById(R.id.car_image);    // carImage -> car_image
+                // item_vehicle.xml의 실제 ID 사용
+                carName = itemView.findViewById(R.id.car_name);
+                carPrice = itemView.findViewById(R.id.car_price);
+                carType = itemView.findViewById(R.id.car_type);
+                carImage = itemView.findViewById(R.id.car_image);
+                // ★ 화살표 아이콘 추가
+                arrowIcon = itemView.findViewById(R.id.ic_arrow_forward);
 
                 // null 체크 로그
                 if (carName == null) Log.e("VehicleAdapter", "car_name not found in layout");
                 if (carPrice == null) Log.e("VehicleAdapter", "car_price not found in layout");
                 if (carType == null) Log.e("VehicleAdapter", "car_type not found in layout");
                 if (carImage == null) Log.e("VehicleAdapter", "car_image not found in layout");
+                if (arrowIcon == null) Log.e("VehicleAdapter", "ic_arrow_forward not found in layout");
 
             } catch (Exception e) {
                 Log.e("VehicleAdapter", "ViewHolder 초기화 오류", e);

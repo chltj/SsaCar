@@ -7,59 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".activity.CallHereActivity">
 
-    <!-- 지도 (전체 화면) -->
-    <LinearLayout
-        android:id="@+id/top_bar"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#FFFFFF"
-        android:elevation="4dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/appTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_weight="1"
-            android:text="SSACAR"
-            android:textColor="#F77F8187"
-            android:textSize="30dp"
-            android:textStyle="bold|italic" />
-
-        <TextView
-            android:id="@+id/menu_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:padding="4dp"
-            android:text="☰"
-            android:textColor="#333333"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/appTitle3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_weight="1"
-        android:text="SSACAR"
-        android:textColor="#F77F8187"
-        android:textSize="30dp"
-        android:textStyle="bold|italic" />
-
-    <ImageView
-        android:id="@+id/notificationIcon3"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="12dp"
-        android:contentDescription="Notifications"
-        android:src="@drawable/ic_notifications" />
 
     <!-- 상단 제목 바 (지도 위에 오버레이) -->
 
@@ -71,6 +18,25 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <EditText
+        android:id="@+id/keyword_et"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="20dp"
+        android:layout_marginStart="391dp"
+        android:layout_marginEnd="411dp"
+        android:background="#ffffff"
+        android:ems="10"
+        android:hint="건물 혹은 주소를 입력하세요"
+        android:inputType="text"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <LinearLayout
         android:id="@+id/my_location_btn"
@@ -114,50 +80,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="어느 주차장으로 반납하시나요?"
+            android:text="어디서 반납하시나요?"
             android:textColor="#666666"
             android:textSize="14sp" />
-
-        <LinearLayout
-            android:id="@+id/search_input_area"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="#F5F5F5"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
-
-            <!-- 위치 아이콘 -->
-            <TextView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:gravity="center"
-                android:text="📍" />
-
-            <!-- 검색 텍스트 -->
-            <TextView
-                android:id="@+id/search_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="선택된 주소"
-                android:textColor="#333333"
-                android:textSize="16sp" />
-
-            <!-- 변경 버튼 -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#F0F0F0"
-                android:padding="8dp"
-                android:text="바꾸기"
-                android:textColor="#666666"
-                android:textSize="14sp" />
-
-        </LinearLayout>
 
         <TextView
             android:id="@+id/selected_location_tv"
@@ -175,12 +100,12 @@
             android:id="@+id/confirm_location_btn"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#6366F1"
-            android:enabled="false"
+            android:background="@color/black"
             android:text="여기서 차 반납하기"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:enabled="false" />
 
     </LinearLayout>
 

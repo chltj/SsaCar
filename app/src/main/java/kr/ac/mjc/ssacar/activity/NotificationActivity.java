@@ -27,6 +27,8 @@ public class NotificationActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     List<String> displayList;
 
+
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +44,17 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void loadNotifications() {
+        SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
+        String currentUserId = userPrefs.getString("current_user_id", null);
+
         SharedPreferences prefs = getSharedPreferences("notification_storage", MODE_PRIVATE);
-        String json = prefs.getString("notifications", null);
+        String json = prefs.getString("notifications_" + currentUserId, null); // ✅ 사용자별 키로 변경
         Gson gson = new Gson();
 
         Type type = new TypeToken<List<NotificationItem>>() {}.getType();
         notificationList = json != null ? gson.fromJson(json, type) : new ArrayList<>();
 
+        displayList.clear();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         for (NotificationItem item : notificationList) {
@@ -58,4 +64,6 @@ public class NotificationActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, displayList);
         listView.setAdapter(adapter);
     }
+
+
 }

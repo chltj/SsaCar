@@ -120,8 +120,7 @@ public class CallReturnActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void initViews() {
-        searchInputArea = findViewById(R.id.search_input_area);
-        searchText = findViewById(R.id.search_text);
+
         selectedLocationTv = findViewById(R.id.selected_location_tv);
         confirmLocationBtn = findViewById(R.id.confirm_location_btn);
         myLocationBtn = findViewById(R.id.my_location_btn);

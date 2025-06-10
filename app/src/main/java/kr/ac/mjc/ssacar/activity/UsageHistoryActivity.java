@@ -49,17 +49,29 @@ public class UsageHistoryActivity extends AppCompatActivity {
             intent.putExtra("imageUrl", item.getImageUrl());
             startActivity(intent);
         });
+        findViewById(R.id.button_home).setOnClickListener(v -> {
+            Intent intent = new Intent(UsageHistoryActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish(); // 현재 액티비티 종료
+        });
     }
 
     private List<PaymentHistory> loadHistoryFromPrefs() {
-        SharedPreferences prefs = getSharedPreferences("payment_history", Context.MODE_PRIVATE);
-        String json = prefs.getString("history_list", null); // 저장할 때의 키와 일치시킴
-        if (json != null) {
-            return new Gson().fromJson(json, new TypeToken<List<PaymentHistory>>(){}.getType());
+        SharedPreferences userPrefs = getSharedPreferences("current_user", MODE_PRIVATE);
+        String currentUserId = userPrefs.getString("current_user_id", null);
+
+        if (currentUserId != null) {
+            SharedPreferences prefs = getSharedPreferences("payment_history", Context.MODE_PRIVATE);
+            String json = prefs.getString("history_list_" + currentUserId, null); // 사용자 ID별 키로 저장
+
+            if (json != null) {
+                return new Gson().fromJson(json, new TypeToken<List<PaymentHistory>>(){}.getType());
+            }
         }
+
         return new ArrayList<>();
-
-
     }
+
 
 }

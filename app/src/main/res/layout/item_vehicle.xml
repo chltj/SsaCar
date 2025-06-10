@@ -14,13 +14,14 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
+
         <!-- 차량 이미지 -->
         <ImageView
             android:id="@+id/car_image"
             android:layout_width="120dp"
             android:layout_height="80dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/placeholder_car"
+            android:background="@drawable/sample_car"
             android:contentDescription="차량 이미지"
             android:scaleType="centerCrop" />
 
@@ -78,6 +79,7 @@
 
         <!-- 선택 아이콘 -->
         <ImageView
+            android:id="@+id/ic_arrow_forward"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
