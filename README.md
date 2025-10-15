@@ -251,17 +251,17 @@ SSACAR는 사용자가 차량을 손쉽게 대여·반납할 수 있는 모바�
 
 ### 2. 면허 등록
        * 로그인 전에는 차량 리스트를 제외한 모든 버튼 클릭 시 로그인 안내 메시지 출력
-<img src="./screenshots/면허등.png" alt="지도 화면" width="300px">
+<img src="./screenshots/면허등록.png" alt="지도 화면" width="300px">
 <br><br>
 
 ### 3. 면허증(리스트)
        * 마이페이지에서 면허 정보 클릭 시 등록된 면허 리스트 표시
-<img src="./screenshots/면허증.png" alt="지도 화면" width="300px">
+<img src="./screenshots/면허증.png" alt="지도 화면" width="250px">
 <br><br>
 
 ### 4. 마이페이지
        * 회원가입 시 작성한 정보(아이디, 이름, 전화번호)와 면허 등록 상태 표시
-<img src="./screenshots/마이페이지.png" alt="지도 화면" width="300px">
+<img src="./screenshots/마이페이지.png" alt="지도 화면" width="250px">
 <br><br>
 
 ### 5. 구글 맵 지도
