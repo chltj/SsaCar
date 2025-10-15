@@ -139,53 +139,53 @@ SSACAR는 사용자가 차량을 손쉽게 대여·반납할 수 있는 모바�
  ┣ 📜AndroidManifest.xml
  ┣ 📂java
  ┃ ┗ 📂com
- ┃   ┗ 📂example
- ┃     ┗ 📂ssacar
- ┃       ┣ 📂activity
- ┃       ┃ ┣ 📜SplashActivity.java
- ┃       ┃ ┣ 📜LoginActivity.java
- ┃       ┃ ┣ 📜RegisterActivity.java
- ┃       ┃ ┣ 📜LicenseRegisterActivity.java
- ┃       ┃ ┣ 📜MainActivity.java
- ┃       ┃ ┣ 📜MapCallHereActivity.java          # 여기로 부르기
- ┃       ┃ ┣ 📜MapPickupActivity.java            # 가지러 가기 / 편도
- ┃       ┃ ┣ 📜TimeSettingActivity.java          # 시간/기간 설정
- ┃       ┃ ┣ 📜CarListActivity.java
- ┃       ┃ ┣ 📜CarDetailActivity.java
- ┃       ┃ ┣ 📜PaymentActivity.java
- ┃       ┃ ┣ 📜CardListActivity.java
- ┃       ┃ ┣ 📜CardAddActivity.java
- ┃       ┃ ┣ 📜HistoryActivity.java              # 이용내역
- ┃       ┃ ┗ 📜NotificationActivity.java         # 알림
- ┃       ┣ 📂adapter
- ┃       ┃ ┣ 📜CarListAdapter.java
- ┃       ┃ ┣ 📜HistoryListAdapter.java
- ┃       ┃ ┗ 📜NotificationListAdapter.java
- ┃       ┣ 📂model
- ┃       ┃ ┣ 📜User.java
- ┃       ┃ ┣ 📜License.java
- ┃       ┃ ┣ 📜ParkingLot.java
- ┃       ┃ ┣ 📜Car.java
- ┃       ┃ ┣ 📜Reservation.java
- ┃       ┃ ┣ 📜Payment.java
- ┃       ┃ ┗ 📜Notice.java
- ┃       ┣ 📂api
- ┃       ┃ ┣ 📜HyundaiApiService.java            # 현대 API 연동
- ┃       ┃ ┣ 📜MapApiService.java                # Kakao/Google Map
- ┃       ┃ ┣ 📜ApiClient.java                    # Retrofit/OkHttp 클라이언트
- ┃       ┃ ┗ 📜ApiInterceptor.java
- ┃       ┣ 📂firebase
- ┃       ┃ ┣ 📜AuthManager.java                  # Firebase Auth 래퍼
- ┃       ┃ ┣ 📜DbManager.java                    # Realtime DB 접근
- ┃       ┃ ┗ 📜StorageManager.java               # (이미지 등) Storage
- ┃       ┣ 📂utils
- ┃       ┃ ┣ 📜TimeUtils.java
- ┃       ┃ ┣ 📜FormatUtils.java
- ┃       ┃ ┣ 📜Constants.java
- ┃       ┃ ┗ 📜PrefHelper.java                   # SharedPreferences
- ┃       ┗ 📂repository
- ┃         ┣ 📜CarRepository.java
- ┃         ┣ 📜ReservationRepository.java
+ ┃ ┃ ┗ 📂example
+ ┃ ┃ ┃ ┃ ┗ 📂ssacar
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂activity
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜SplashActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜LoginActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜RegisterActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜LicenseRegisterActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜MainActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜MapCallHereActivity.java          # 여기로 부르기
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜MapPickupActivity.java            # 가지러 가기 / 편도
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜TimeSettingActivity.java          # 시간/기간 설정
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CarListActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CarDetailActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜PaymentActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CardListActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CardAddActivity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜HistoryActivity.java              # 이용내역
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜NotificationActivity.java         # 알림
+ ┃ ┃ ┃ ┃ ┣ 📂adapter
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜CarListAdapter.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜HistoryListAdapter.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜NotificationListAdapter.java
+ ┃ ┃ ┃ ┃ ┣ 📂model
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜User.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜License.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ParkingLot.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜Car.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜Reservation.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜Payment.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜Notice.java
+ ┃ ┃ ┃ ┃ ┣ 📂api
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜HyundaiApiService.java            # 현대 API 연동
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜MapApiService.java                # Kakao/Google Map
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜ApiClient.java                    # Retrofit/OkHttp 클라이언트
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜ApiInterceptor.java
+ ┃ ┃ ┃ ┃ ┣ 📂firebase
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜AuthManager.java                  # Firebase Auth 래퍼
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜DbManager.java                    # Realtime DB 접근
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜StorageManager.java               # (이미지 등) Storage
+ ┃ ┃ ┃ ┃ ┣ 📂utils
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜TimeUtils.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜FormatUtils.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📜Constants.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📜PrefHelper.java                   # SharedPreferences
+ ┃ ┃ ┃ ┃ ┗ 📂repository
+ ┃ ┃ ┃ ┃ ┣ 📜CarRepository.java
+ ┃  ┃ ┃ ┃ ┣ 📜ReservationRepository.java
  ┃         ┗ 📜PaymentRepository.java
  ┣ 📂res
  ┃ ┣ 📂layout
