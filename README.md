@@ -256,12 +256,12 @@ SSACAR는 사용자가 차량을 손쉽게 대여·반납할 수 있는 모바�
 
 ### 3. 면허증(리스트)
        * 마이페이지에서 면허 정보 클릭 시 등록된 면허 리스트 표시
-<img src="./screenshots/면허.png" alt="지도 화면" width="300px">
+<img src="./screenshots/면허증.png" alt="지도 화면" width="300px">
 <br><br>
 
 ### 4. 마이페이지
        * 회원가입 시 작성한 정보(아이디, 이름, 전화번호)와 면허 등록 상태 표시
-<img src="./screenshots/마이페이.png" alt="지도 화면" width="300px">
+<img src="./screenshots/마이페이지.png" alt="지도 화면" width="300px">
 <br><br>
 
 ### 5. 구글 맵 지도
@@ -299,7 +299,7 @@ SSACAR는 사용자가 차량을 손쉽게 대여·반납할 수 있는 모바�
 
 ### 11. 알림
        * 결제 후 토스트 메시지 → 알림 탭에 저장되어 리스트로 표시
-<img src="./screenshots/알림.png" alt="지도 화면" width="600px">
+<img src="./screenshots/알림.png" alt="지도 화면" width="300px">
 <br><br>
 
 
