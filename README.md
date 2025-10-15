@@ -135,6 +135,8 @@ SSACAR는 사용자가 차량을 손쉽게 대여·반납할 수 있는 모바�
 <br>
 
 <details> <summary>📂 전체 프로젝트 구조 보기 (클릭하여 펼치기)</summary>
+
+```text
 📦main
  ┣ 📜AndroidManifest.xml
  ┣ 📂java
@@ -228,8 +230,10 @@ SSACAR는 사용자가 차량을 손쉽게 대여·반납할 수 있는 모바�
  ┃ ┗ 📂xml
  ┃   ┗ 📜network_security_config.xml
  ┗ 📂assets
-   ┗ 📜mock_parkinglots.json                     # (선택) 목데이터
+   ┗ 📜mock_parkinglots.json                  # (선택) 목데이터
+```
 </details>
+
 <br> <br>
 
 ## 💻 <span id="6"> 6. 주요 기능 소개</span>
